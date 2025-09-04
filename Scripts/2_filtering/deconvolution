@@ -1,0 +1,34 @@
+#!/bin/sh
+
+
+input=Line_001_geom_cdp_d2_fk_bandpass.su
+output=Line_001_geom_cdp_d2_fk_bandpass_decon.su
+ep=32
+ntout=121
+minlag=0.02
+maxlag=0.1
+pnoise=0.001
+
+# Take one shot to test
+suwind < $input key=ep min=$ep max=$ep > tmp1.su
+
+# Plot shot before deconvolution
+suximage < tmp1.su perc=80 &
+
+# Do autocorrelation and show the plot
+suacor < tmp1.su ntout=$ntout | suximage perc=80 &
+
+# Deconvolution
+supef < tmp1.su > tmp2.su minlag=$minlag maxlag=$maxlag pnoise=$pnoise
+
+# Plot shot after deconvolution
+suximage < tmp2.su perc=80 &
+
+# Do autocorrelation after deconvolution and show the plot
+suacor < tmp2.su ntout=$ntout | suximage perc=80 &
+
+# Apply deconvolution for all data
+supef < $input > $output minlag=$minlag maxlag=$maxlag pnoise=$pnoise
+
+# Remove temporary files
+rm -f tmp1.su tmp2.su

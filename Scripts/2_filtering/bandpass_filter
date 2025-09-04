@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# Apply bandpass filter
+
+# Change parameter here
+input=Line_001_geom_cdp_d2_fk.su
+output=Line_001_geom_cdp_d2_fk_bandpass.su
+ep=32
+tracf_min=100
+tracf_max=103
+f=16,21,50,60
+
+# Take one shot to test
+suwind < $input key=ep min=$ep max=$ep > tmp1.su
+
+# Take a few trace to test
+suwind < tmp1.su key=tracf min=$tracf_min max=$tracf_max > tmp2.su
+
+# Plot shot before bandpass
+suximage perc=80 < tmp1.su title="Shot $ep before bandpass filter" label1="Time [s]" label2="Trace" &
+
+# Save plot
+output_eps_shot_before=${input%.su}_shot-${ep}_before-bandpass.eps
+supsimage perc=80 < tmp1.su title="Shot $ep before bandpass filter" label1="Time [s]" label2="Trace" > $output_eps_shot_before &
+
+# Plot FX spectrum traces before bandpass
+suspecfx < tmp2.su | suxwigb title="Frequency spectrum of traces ${tracf_min}-${tracf_max} before bandpass filter" label1="Frequency [Hz]" label2="Trace" &
+
+# Save plot
+output_eps_spectrum_before=${input%.su}_shot-${ep}_spectrum_before-bandpass.eps
+suspecfx < tmp2.su | supswigb perc=80 title="Frequency spectrum of traces ${tracf_min}-${tracf_max} before bandpass filter" label1="Frequency [Hz]" label2="Trace" > $output_eps_spectrum_before &
+
+# Bandpass Filter
+sufilter < tmp1.su f=$f > tmp3.su
+
+# Take a few trace of filtered data
+suwind < tmp3.su key=tracf min=$tracf_min max=$tracf_max > tmp4.su
+
+# Plot shot after bandpass
+suximage perc=80 < tmp3.su title="Shot $ep after bandpass filter (cutoff = $f)" label1="Time [s]" label2="Trace" &
+
+# Save plot
+output_eps_shot_after=${input%.su}_shot-${ep}_after-bandpass.eps
+supsimage perc=80 < tmp3.su title="Shot $ep after bandpass filter" label1="Time [s]" label2="Trace" > $output_eps_shot_after &
+
+# Plot FX spectrum traces after bandpass
+suspecfx < tmp4.su | suxwigb title="Frequency spectrum of traces ${tracf_min}-${tracf_max} after bandpass filter" label1="Frequency [Hz]" label2="Trace" &
+
+# Save plot
+output_eps_spectrum_after=${input%.su}_shot-${ep}_spectrum_after-bandpass.eps
+suspecfx < tmp4.su | supswigb perc=80 title="Frequency spectrum of traces ${tracf_min}-${tracf_max} after bandpass filter" label1="Frequency [Hz]" label2="Trace" > $output_eps_spectrum_after &
+
+# Apply to all data
+sufilter < $input f=$f > $output
+
+# Remove temporary files
+rm -f tmp1.su tmp2.su tmp3.su tmp4.su

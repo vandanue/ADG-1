@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Apply geometry
+
+input=Line_001_kill-trace.su
+output=Line_001_geom.su
+geometry=geom_header.bin
+
+sushw < $input infile=$geometry key=sx,sy,selev,sstat,gx,gy,gelev,gstat,cdp,offset > $output

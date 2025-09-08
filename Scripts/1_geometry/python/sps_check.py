@@ -1,6 +1,6 @@
-fname1 = 'Line_001.SPS'
-fname2 = 'Line_001.RPS'
-fname3 = 'Line_001.XPS'
+fname1 = '../../../Data/ADG1/Line_001.SPS'
+fname2 = '../../../Data/ADG1/Line_001.RPS'
+fname3 = '../../../Data/ADG1/Line_001.XPS'
 
 fhand = open(fname1)
 sp=[]

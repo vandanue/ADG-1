@@ -1,5 +1,5 @@
 import os
-os.chdir(r'D:\SU\processing\exercise')
+os.chdir(r'../../../Data/ADG1/')
 import math
 import csv
 fname1 = 'Line_001.SPS'
@@ -133,6 +133,6 @@ for i in range(0,251):
 
 with open('geometry.txt', 'w', newline='\n') as f:
     writer = csv.writer(f, delimiter=' ')
-    for data in zip(xcord_s, ycord_s, src_elev, src_stat, xcord_r, ycord_r, rcv_elev, rcv_stat, offset):
+    for data in zip(xcord_s, ycord_s, src_elev, src_stat, xcord_r, ycord_r, rcv_elev, rcv_stat, offset):   # return x-source, y-source, source elevation, source static, x-receiver, y-receiver, receiver elevation, receiver static, offset
         writer.writerow(data)
     f.write('\n')

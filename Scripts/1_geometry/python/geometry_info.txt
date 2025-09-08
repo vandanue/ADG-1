@@ -1,0 +1,14 @@
+PS file information:
+
+============= SPS FILE=============
+First Shot Point:       701
+Last Shot Point:      1201
+Total number of shots:  251 VPs
+============= RPS FILE=============
+First Receiver Point:       561
+Last Shot Point:      1342
+Total number of receivers:  782 Receiver
+============= XPS FILE=============
+First Field File ID:   231
+Last Field File ID:   481
+Total number of traces:  70782

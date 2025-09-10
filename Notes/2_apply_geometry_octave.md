@@ -45,6 +45,7 @@ To get these into a format SU can actually digest, we first use a small shell sc
 
 ```shell
 awk 'gsub(/1V1/,""){if(NR>20){print$2,$8,$9,$10,$3}}' Line_001.SPS > SPS_extract.txt
+awk 'gsub(/1G1/,""){if(NR>20){print$2,$8,$9,$10,$3}}' Line_001.RPS > RPS_extract.txt
 ```
 
 - `NR>20` will skip the first 20 header lines
@@ -67,9 +68,17 @@ SU doesn’t want to deal with messy SPS/RPS formats directly. What it does want
 
 Basically: we’re prepping the geometry metadata so SU can “link” traces to the field survey.
 
+To run the `extract_geom_ps` script, simply type in the terminal:
+
+```bash
+sh extract_geom_ps
+```
+
+This will generate the `SPS_extract.txt` and `RPS_extract.txt` files, which will later be used for building the geometry.
+
 ## Step 2 – Building the Geometry Matrix in MATLAB/Octave
 
-Okay, so after Step 1 we’ve got our clean SPS and RPS extract files. Now it’s time to actually build the geometry header matrix, which basically tells us: 
+After Step 1 we’ve got our clean SPS and RPS extract files. Now it’s time to actually build the geometry header matrix, which basically tells us: 
 
 - Where the source (sx, sy, selev, sstat) is for each trace
 
@@ -79,7 +88,7 @@ Okay, so after Step 1 we’ve got our clean SPS and RPS extract files. Now it’
 
 - The CDP (Common Depth Point) number for stacking later
 
-The script can be accessed in this [repository]([ADG-1/Scripts/1_geometry/matlab-octave at 192ab28266fb8a46be2af1985d7ac2a82e8a7d57 · vandanue/ADG-1 · GitHub](https://github.com/vandanue/ADG-1/tree/192ab28266fb8a46be2af1985d7ac2a82e8a7d57/Scripts/1_geometry/matlab-octave)) 
+The script can be accessed in this [repository]([ADG-1/Scripts/1_geometry/matlab-octave at 192ab28266fb8a46be2af1985d7ac2a82e8a7d57 · vandanue/ADG-1 · GitHub](https://github.com/vandanue/ADG-1/tree/192ab28266fb8a46be2af1985d7ac2a82e8a7d57/Scripts/1_geometry/matlab-octave)) . If you are using Octave in Ubuntu, you can open the Octave terminal by typing `octave`. TTo run the geometry-building script, type `geom_octave.m` in Octave terminal. Once you are done, you can exit the Octave terminal by pressing `Ctrl + Z`.
 
 ### Loading the SPS & RPS data
 
@@ -124,9 +133,14 @@ rps_all_traces=cell2mat(rps_for_traces_in_each_shot');
 
 ```matlab
 sx=sps_all_traces(:,2); sy=sps_all_traces(:,3);
-gx=rps_all_traces(:,2); gy=rps_all_traces(:,3);
+selev=sps_all_traces(:,4); sstat=sps_all_traces(:,5);
 
-ox=gx-sx; oy=gy-sy;
+gx=rps_all_traces(:,2); gy=rps_all_traces(:,3);
+gelev=rps_all_traces(:,4); gstat=rps_all_traces(:,5);
+
+ox=gx-sx;
+oy=gy-sy;
+
 offset=sqrt(ox.^2+oy.^2);
 ```
 
@@ -195,12 +209,40 @@ plot(sx,sy,'r*'); hold on
 plot(gx,gy,'b^');
 xlabel('Easting'); ylabel('Northing');
 legend('Source','Geophone');
-title("Source Receiver Plot")
+title('Source Receiver Plot')
 ```
 
 Red stars = sources, blue triangles = receivers. This quick plot is a sanity check, if the geometry looks weird here, it’s gonna be chaos later in SU.
 
-## Step 3 – Offset Regularization
+## Step 3 – Converting from `ascii` to `binary`
+
+The `geom_header.txt` that we get earlier must be converted to binary before we input to the seismic data. The command to convert:
+
+```bash
+a2b < geom_header.txt n1=10 > geom_header.bin
+```
+
+`a2b` means ascii to binary and `n1=10` indicates that there are 10 columns in the header.
+
+## Step 4 – Apply the geometry to seismic data
+
+The program to applying `geom_header.bin` to the in SU
+
+```bash
+sushw < Line_001-kill.su infile=geom_header.bin key=sx,sy,selev,sstat,gx,gy,gelev,gstat,cdp,offset > Line_001_geom.su
+```
+
+After we apply the geometry, we can check the updated header using `surange`.
+
+```bash
+surange < Line_001_geom.su
+```
+
+The updated header should look like this
+
+![geometry1](/run/user/1000/doc/115dfb32/img_2.png)
+
+## Step 5 – Offset Regularization
 
 So after we built the geometry header matrix, we noticed something:
 
@@ -250,6 +292,28 @@ save -ascii geom_header_reg_offset.txt geom_header_reg_offset
 Replace the messy field offsets in `geom_header.txt` with our new regularized offsets. Save it as `geom_header_reg_offset.txt`. 
 
 TL;DR: Field offsets are messy (like GPS scatter). Offset regularization snaps them into neat bins (like a clean grid). This makes the processing pipeline much smoother, especially for CDP gathers and velocity analysis.
+
+## Step 6 – Apply  New Header
+
+After we create the new header, we need to re-apply the new header. First thing is converting ascii to binary.
+
+```bash
+a2b < geom_header_reg_offset.txt n1=10 > geom_header_reg_offset.bin
+```
+
+After we get the binary file from the new header, input to the data with the same `sushw` program but with the new header file. 
+
+After that, sort the CMP gather with `susort` in the following command:
+
+```bash
+susort cdp offset < Line_001_geom.su > Line_001_geom_cdp.su
+```
+
+The result will be like this
+
+![geometry2](/run/user/1000/doc/485a2c6c/img_3.png)
+
+Notice that the offset range are already correct.
 
 ## Geometry Recap
 

@@ -240,7 +240,7 @@ surange < Line_001_geom.su
 
 The updated header should look like this
 
-![geometry1](/run/user/1000/doc/115dfb32/img_2.png)
+![geometry1](../img/img_2.png)
 
 ## Step 5 – Offset Regularization
 
@@ -311,7 +311,7 @@ susort cdp offset < Line_001_geom.su > Line_001_geom_cdp.su
 
 The result will be like this
 
-![geometry2](/run/user/1000/doc/485a2c6c/img_3.png)
+![geometry2](../img/img_3.png)
 
 Notice that the offset range are already correct.
 

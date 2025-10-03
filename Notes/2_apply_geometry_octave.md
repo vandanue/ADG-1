@@ -41,7 +41,7 @@ From this, we’ll eventually use:
 
 ### Pre-cleaning with `awk`
 
-To get these into a format SU can actually digest, we first use a small shell script ([what is shell scripting?]([Introduction to Linux Shell and Shell Scripting - GeeksforGeeks](https://www.geeksforgeeks.org/linux-unix/introduction-linux-shell-shell-scripting/))). This script trims the header and pulls only the useful columns.
+To get these into a format SU can actually digest, we first use a small shell script ([what is shell scripting?]([Introduction to Linux Shell and Shell Scripting - GeeksforGeeks](https://www.geeksforgeeks.org/linux-unix/introduction-linux-shell-shell-scripting/)). This script trims the header and pulls only the useful columns.
 
 ```shell
 awk 'gsub(/1V1/,""){if(NR>20){print$2,$8,$9,$10,$3}}' Line_001.SPS > SPS_extract.txt
@@ -88,7 +88,7 @@ After Step 1 we’ve got our clean SPS and RPS extract files. Now it’s time to
 
 - The CDP (Common Depth Point) number for stacking later
 
-The script can be accessed in this [repository]([ADG-1/Scripts/1_geometry/matlab-octave at 192ab28266fb8a46be2af1985d7ac2a82e8a7d57 · vandanue/ADG-1 · GitHub](https://github.com/vandanue/ADG-1/tree/192ab28266fb8a46be2af1985d7ac2a82e8a7d57/Scripts/1_geometry/matlab-octave)) . If you are using Octave in Ubuntu, you can open the Octave terminal by typing `octave`. TTo run the geometry-building script, type `geom_octave.m` in Octave terminal. Once you are done, you can exit the Octave terminal by pressing `Ctrl + Z`.
+The script can be accessed in this [repository]([ADG-1/Scripts/1_geometry/matlab-octave at 192ab28266fb8a46be2af1985d7ac2a82e8a7d57 · vandanue/ADG-1 · GitHub](https://github.com/vandanue/ADG-1/tree/192ab28266fb8a46be2af1985d7ac2a82e8a7d57/Scripts/1_geometry/matlab-octave)). If you are using Octave in Ubuntu, you can open the Octave terminal by typing `octave`. TTo run the geometry-building script, type `geom_octave.m` in Octave terminal. Once you are done, you can exit the Octave terminal by pressing `Ctrl + Z`.
 
 ### Loading the SPS & RPS data
 

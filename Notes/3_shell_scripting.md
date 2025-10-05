@@ -20,7 +20,7 @@ Shell scripting enhances productivity and reproducibility in seismic data analys
 Below is a simple Bash script that demonstrates a typical SU workflow using `suwind`, `sufft`, and `suximage`:
 
 ```bash
-#!/bin/bash
+#!/bin/sh
 
 # Select traces from input.su using suwind
 suwind < input.su key=cdp min=100 max=200 > selected.su

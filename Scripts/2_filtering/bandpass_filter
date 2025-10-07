@@ -8,7 +8,8 @@ output=Line_001_geom_cdp_d2_fk_bandpass.su
 ep=32
 tracf_min=100
 tracf_max=103
-f=16,21,50,60
+amps=0,0,1,1 # High Pass
+f=4,15,90,100
 
 # Take one shot to test
 suwind < $input key=ep min=$ep max=$ep > tmp1.su
@@ -51,7 +52,7 @@ output_eps_spectrum_after=${input%.su}_shot-${ep}_spectrum_after-bandpass.eps
 suspecfx < tmp4.su | supswigb perc=80 title="Frequency spectrum of traces ${tracf_min}-${tracf_max} after bandpass filter" label1="Frequency [Hz]" label2="Trace" > $output_eps_spectrum_after &
 
 # Apply to all data
-sufilter < $input f=$f > $output
+sufilter < $input f=$f amps=$amps > $output
 
 # Remove temporary files
 rm -f tmp1.su tmp2.su tmp3.su tmp4.su

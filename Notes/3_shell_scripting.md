@@ -41,6 +41,30 @@ sufilter < Line_001_geom.su f=15,20,50,60 amps=0,1,1,0 > Line_001_geom_bp.su
 ```
 This short script automatically selects a shot, applies a bandpass filter, and visualizes the results — all in one go. Instead of manually typing each command, you can just run this once and focus on analyzing the output.
 
+## How to Save and Run the Script
+1. Save the script file
+- Open a text editor (like `nano`, `gedit`, or any code editor).
+- Copy and paste the script above.
+- Save it with the `.sh` extension, for example
+```bash
+bpf.sh
+```
+2. Make the script executable
+In your terminal, check if the script executable:
+```bash
+chmod +x bpf.sh
+```
+3. Run the script
+Once it’s executable, simply run it with:
+```bash
+./bpf.sh
+```
+or, if you prefer,
+```bash
+sh bpf.sh
+```
+The script will automatically execute the Seismic Unix commands in sequence and open SU windows for visualization (like `suximage`).
+
 ## What If We Don’t Use Shell Scripting?
 Without shell scripting, you’d have to type every SU command line by line — for every dataset, every parameter change, and every visualization. For example, applying the same filter to multiple shots would mean copying and pasting commands repeatedly.
 

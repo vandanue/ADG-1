@@ -79,6 +79,7 @@ sugain agc=1 wagc=1 < ${indata%.su}_ep${ep}.su | suximage perc=80 &
 These operations don't permanently after the data, like dependent operations did. If the inverse function is applied to the original data can, in principle, be restored. Using `sugain` command both multiplication by power of time and exponential gain can be achieved. These two parameters must be given to the `sugain` command:
 
 `tpow` -> Multiply data by $t^{pow}$
+
 `epow` -> Multiply data by $e^{pow}$
 
 So giving this command will apply a gain function with a power of two ($t^2$) to the data:

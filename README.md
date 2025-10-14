@@ -7,6 +7,6 @@ Course notes for the Geophysical Data Analysis 1 course (2025/2026 - 1) taught b
 flowchart TD
     A[Raw Seismic Data] --> B[Convert SEGY to SU]
     B --> C[Apply Geometry]
-    C --> D[Gain Testing]
-    D --> E[Filtering]
+    C --> D["Gain (Amplitude Correction)"]
+    D --> E[Filtering/Noise Attenuation]
 ```

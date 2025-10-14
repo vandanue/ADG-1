@@ -39,7 +39,7 @@ suximage < Line_001_geom_ep32_bp.su perc=80 title="Shot 32 after BPF" &
 # Apply filter to all data
 sufilter < Line_001_geom.su f=15,20,50,60 amps=0,1,1,0 > Line_001_geom_bp.su
 ```
-This short script automatically selects a shot, applies a bandpass filter, and visualizes the results — all in one go. Instead of manually typing each command, you can just run this once and focus on analyzing the output.
+This short script automatically selects a shot, applies a bandpass filter, and visualizes the results all in one go. Instead of manually typing each command, you can just run this once and focus on analyzing the output.
 
 ## How to Save and Run the Script
 1. Save the script file
@@ -66,7 +66,7 @@ sh bpf.sh
 The script will automatically execute the Seismic Unix commands in sequence and open SU windows for visualization (like `suximage`).
 
 ## What If We Don’t Use Shell Scripting?
-Without shell scripting, you’d have to type every SU command line by line — for every dataset, every parameter change, and every visualization. For example, applying the same filter to multiple shots would mean copying and pasting commands repeatedly.
+Without shell scripting, you’d have to type every SU command line by line for every dataset, every parameter change, and every visualization. For example, applying the same filter to multiple shots would mean copying and pasting commands repeatedly.
 
 That’s not only time-consuming but also prone to mistakes (like overwriting files or mismatching parameters). Shell scripting, on the other hand, allows you to:
 
@@ -112,7 +112,7 @@ suximage < ${indata%.su}_ep${ep}_bp.su perc=$perc title="Shot $ep after BPF" &
 # Apply the same filter to the full dataset
 sufilter < $indata f=$f amps=$amps > ${indata%.su}_bp.su
 ```
-Now you only need to edit the parameter section at the top — for example, if you want to change the input file, shot number, or filter frequencies, you just tweak those values and rerun the script.
+Now you only need to edit the parameter section at the top, for example, if you want to change the input file, shot number, or filter frequencies, you just tweak those values and rerun the script.
 
 This parameterized setup makes your SU workflow:
 - More modular — easily reusable for any dataset.

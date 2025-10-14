@@ -111,3 +111,13 @@ sugain tpow=$tpow < $indata > ${indata%.su}_tpow.su
 
 The output from `tpow = 2` will look like this:
 ![before-after_tpow](../img/img_5.png)
+
+## Output Summary
+
+| Step | Description                                  | Output File                  |
+| ---- | -------------------------------------------- | ---------------------------- |
+| 1    | Extracted single shot (ep = 32)              | `Line_001_geom_ep32.su`      |
+| 2    | Single shot after AGC applied                | `Line_001_geom_ep32_agc.su`  |
+| 3    | Full dataset after AGC applied               | `Line_001_geom_agc.su`       |
+| 4    | Single shot after time-power gain (tpow = 2) | `Line_001_geom_ep32_tpow.su` |
+| 5    | Full dataset after time-power gain applied   | `Line_001_geom_tpow.su`      |

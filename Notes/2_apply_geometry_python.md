@@ -198,19 +198,19 @@ Here’s what’s going on in detail:
 Once the binary file is ready, you apply it to your SU dataset using sushw (set user header word), which injects header information into each seismic trace:
 
 ```bash
-sushw < data.su infile=geometry.bin key=sx,sy,selev,sstat,gx,gy,gelev,gstat,cdp,offset,tracl,tracr > data_geometry.su
+sushw < Line_001.su infile=geometry.bin key=sx,sy,selev,sstat,gx,gy,gelev,gstat,cdp,offset,tracl,tracr > Line_001_geom.su
 ```
 
 In this step:
-- infile`=geometry.bin` specifies the binary header table to be read.
+- `infile=geometry.bin` specifies the binary header table to be read.
 - The `key=` list tells `sushw` which header fields to fill with data from the file. The first column of `geometry.bin` fills the first key (`sx`), the second column fills `sy`, and so on.
-- The modified traces, with updated headers, are written into a new file called `data_geometry.su`.
+- The modified traces, with updated headers, are written into a new file called `Line_001_geom.su`.
 
 ### Step 4 – Check the updated header
 Finally, you should check whether the headers were successfully updated. You can use surange for a quick summary:
 
 ```bash
-surange < data_geometry.su
+surange < Line_001_geom.su
 ```
 
 This command will display the minimum and maximum values for each header field and allowing you to verify that geometry (e.g., sx, gx, cdp, offset) has been properly inserted and matches your expected geometry setup.
@@ -220,3 +220,9 @@ The output of surange should be like this:
 
 ## TL;DR
 So basically, the workflow starts from running `geometry.py`, which handles all the data scrapping from the SPS files. That script reads the shot (SPS) and receiver (RPS) positions, matches them, calculates offsets, assigns CDP numbers, and finally exports everything into a clean `geometry.txt` file.Before SU can actually read it, you have to convert the ASCII table into binary format using `a2b`, since `sushw` only works with binary input. Once the geometry's in binary form, you apply it to the seismic data using `sushw`. This step writes the shot, receiver, and CDP information directly into the trace headers. After that, you confirm that everything's in place by checking the updated headers with `surange`. It lists out the min–max values for each header, letting you see if the geometry was properly applied.
+
+## Output Summary
+| Step | Description                                  | Output File                  |
+| ---- | -------------------------------------------- | ---------------------------- |
+| 1    | Geometry file in `ascii` and `binary` | `geometry.txt` and `geometry.bin`   |
+| 2    | Updated dataset with geometry information | `Line_001_geom.su` |

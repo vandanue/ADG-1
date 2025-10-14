@@ -2,3 +2,16 @@
 1_tutorial/
 Data/
 Other/
+
+# Optional: ignore temporary or system files
+__pycache__/
+*.log
+*.tmp
+*.bak
+*.zip
+*.rar
+
+# VS Code and OS junk
+.vscode/
+.DS_Store
+Thumbs.db

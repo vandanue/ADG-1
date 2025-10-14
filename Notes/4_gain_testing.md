@@ -121,3 +121,7 @@ The output from `tpow = 2` will look like this:
 | 3    | Full dataset after AGC applied               | `Line_001_geom_agc.su`       |
 | 4    | Single shot after time-power gain (tpow = 2) | `Line_001_geom_ep32_tpow.su` |
 | 5    | Full dataset after time-power gain applied   | `Line_001_geom_tpow.su`      |
+
+## Parameter Summary
+> `sugain` using `agc`
+> `sugain` using `tpow=2`

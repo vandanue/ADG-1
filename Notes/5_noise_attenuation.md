@@ -2,7 +2,20 @@
 Seismic data is packed with all kinds of noise. To clean things up, we use signal enhancement tools both before stacking (prestack) and after stacking (post-stack) the Common Midpoint (CMP) gathers. In these notes, we'll break down how to reduce noise from sesimic data using band-pass filtering, f-k filtering, and deconvolution. We'll also compare when you switch up the order: “gain then filter” vs. “filter then gain.”
 
 ## Band-pass Filter
-A band-pass filter is a frequency-domain filter that works by multiplying the amplitude spectrum of an input trace with a filter operator. In Seismic Unix, the `sufilter` command is used for this process. It performs zero-phase frequency filtering, meaning the signal’s phase is preserved while its unwanted frequencies are removed. The zero-phase, band-limited wavelet used in the band-pass filter acts as the *filter operator*, shaping the signal to highlight the desired frequency range. In a simple term, band-pass filter is like a vibe check for your seismic data. It only keeps the frequencies that “fit the vibe” and removes the rest. Now, let’s get into how this is actually done using the `sufilter` command in Seismic Unix.
+A band-pass filter is a frequency-domain filter that works by multiplying the amplitude spectrum of an input trace with a filter operator. In Seismic Unix, the `sufilter` command is used for this process. It performs zero-phase frequency filtering, meaning the signal’s phase is preserved while its unwanted frequencies are removed. The zero-phase, band-limited wavelet used in the band-pass filter acts as the *filter operator*, shaping the signal to highlight the desired frequency range. In a simple term, band-pass filter is like a vibe check for your seismic data. It only keeps the frequencies that “fit the vibe” and removes the rest. 
+
+The practical aspects is explained in Yilmaz, O. (2001). The goal is to pass a certain bandwidth with little or no modification, and to largely suppress the remaining part of the spectrum as much as practical. At first, it appears that this goal can be met by defining the desired amplitude spectrum for the filter operator as follows:
+
+$$
+A(f) = 
+\begin{cases}
+1, & f_1 < f < f_2; \\
+0, & \text{otherwise,}
+\end{cases}
+$$
+
+Now, let’s get into how this is actually done using the `sufilter` command in Seismic Unix.
+
 
 ```bash
 #!/bin/sh

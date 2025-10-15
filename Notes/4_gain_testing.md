@@ -2,6 +2,7 @@
 There are two type of gain algorithm, data dependent and data independent. `sugain` is a gain function in Seismic Unix. There are a lot of gain function if you check the manual book. 
 
 ## Data Dependent Gain
+### Automatic Gain Control (AGC)
 First, we'll try data dependent amplitude correction using Automatic Gain Control (AGC). Before visualizing data, AGC is often applied. It means subdividing each trace into windoes with user-specific length. The RMS amplitude within the window is calculated to the samples within the window. AGC is an axample of amplitude information from the data is used to scale it.
 
 To apply AGC to our dataset, the following command is used:
@@ -76,13 +77,10 @@ sugain agc=1 wagc=1 < ${indata%.su}_ep${ep}.su | suximage perc=80 &
 ```
 
 ## Data Independent Gain
-These operations don't permanently after the data, like dependent operations did. If the inverse function is applied to the original data can, in principle, be restored. Using `sugain` command both multiplication by power of time and exponential gain can be achieved. These two parameters must be given to the `sugain` command:
-
-`tpow` -> Multiply data by $t^{pow}$
-
-`epow` -> Multiply data by $e^{pow}$
-
-So giving this command will apply a gain function with a power of two ($t^2$) to the data:
+### $t$ squared
+The idea of using $t$ (stands for time) squared is because we are transforming three dimensions to one. The seismic waves are spreading out in three dimensions, and the surface area on the expanding spherical wave increases in proportion to the radius squared. Thus the area on which the energy is distributed is increasing in proportion to time squared. But seismic amplitudes are proportiopnal to the suare root of the energy, so the basic geometry of energy spreading predicts only a single power of time for the spherical divergence correction. 
+An additional power of $t$ arises from a simple absorption calculation. Absorption requires a model. The model I'll propose is too simple to explain everything about seismic absorption, but it nicely predicts the extra power of $t$ that experience shows we need.
+These operations don't permanently after the data, like dependent operations did. If the inverse function is applied to the original data can, in principle, be restored. Using `sugain` command both multiplication by power of time gain can be achieved. The parameters must be given to the `sugain` command is `tpow`.
 
 ```bash
 #!/bin/sh

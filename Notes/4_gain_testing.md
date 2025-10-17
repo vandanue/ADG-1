@@ -110,6 +110,37 @@ sugain tpow=$tpow < $indata > ${indata%.su}_tpow.su
 The output from `tpow = 2` will look like this:
 ![before-after_tpow](../img/img_5.png)
 
+## QC (Brute Stack)
+Here, we generate a brute stack to get a quick look at how the gain functions (`AGC` and `tpow`) shape the seismic data. This QC step helps us see whether the amplitude boost actually improves reflector visibility and overall balance before moving forward.
+```bash
+#!/bin/sh
+
+killall ximage
+
+# Brute Stack
+#indata=Line_001_geom_agc.su               # AGC
+indata=Line_001_geom_tpow.su             # tpow
+vnmo=1700,2750,3000
+tnmo=0.1,1,2
+
+# Add d2
+sushw < $indata key=d2 a=0.025 > tmp1
+
+# Sort CDP
+susort cdp offset < tmp1 > tmp2
+
+# Apply NMO correction and stacking
+sunmo < tmp2 vnmo=$vnmo tnmo=$tnmo | sustack > tmp3
+
+# Plot brute stack
+suximage < tmp3 cmap=hsv5 title="Brute stack V0" label1="Time [s]" label2="Offset [km]" perc=90 &
+
+rm -f tmp*
+```
+
+The brute stack from `tpow` gain appears as follows
+![brute_stack-tpow](../img/img_7.png)
+
 ## Output Summary
 
 | Step | Description                                  | Output File                  |

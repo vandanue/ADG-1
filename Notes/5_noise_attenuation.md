@@ -24,7 +24,7 @@ Now, let’s get into how this is actually done using the `sufilter` command in 
 
 # Parameter
 indata=Line_001_geom_tpow.su
-f=10,15,70,80                  # Array of filter frequencies (HZ)
+f=10,15,70,80                   # Array of filter frequencies (HZ)
 amps=0,1,1,0                    # Array of filter amplitudes
 perc=80                         
 ep=32                           # Shotpoint number

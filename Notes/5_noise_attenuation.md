@@ -158,6 +158,7 @@ The image below shows the result of the band-pass filter with cut-off frequencie
 Deconvolution compresses the basic wavelet in the recorded seismogram, attenuates reverberations and short-period multiples, and improves temporal resolution, giving a clearer representation of subsurface reflectivity. Beyond simple wavelet compression, deconvolution also helps suppress multiple energy in the seismic section. This process is commonly implemented using an inverse filter as the deconvolution operator, which ideally recovers the earth's impulse response when applied to a seismogram. The inverse filter is typically estimated using the least-squares method.
 
 Mathematically, this can be expressed as:
+
 $$
 x(t) = w(t) * r(t) + n(t)
 $$

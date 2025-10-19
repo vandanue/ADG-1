@@ -2,6 +2,7 @@
 1_tutorial/
 Data/
 Other/
+.gitignore
 
 # Optional: ignore temporary or system files
 __pycache__/

@@ -138,7 +138,7 @@ suximage < tmp3 cmap=hsv5 title="Brute stack V0" label1="Time [s]" label2="Offse
 rm -f tmp*
 ```
 
-The brute stack from `tpow` gain appears as follows
+This step can actually be shortened by using command piping (`|`) instead of creating temporary files between processes. The brute stack from `tpow` gain appears as follows
 ![brute_stack-tpow](../img/img_7.png)
 
 ## Output Summary

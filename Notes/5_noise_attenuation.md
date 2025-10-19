@@ -14,6 +14,67 @@ Table below gives example of common observed types of noise that can contribute 
 
 In these notes, we'll break down how to reduce noise from sesimic data using band-pass filtering, f-k filtering, and deconvolution. We'll also compare when you switch up the order: “gain then filter” vs. “filter then gain.”
 
+## F-K Filter
+Filtering in the frequency–wavenumber (f-k) domain, also known as dip or velocity filtering, is used to separate seismic energy based on its apparent velocity. All seismic events that originate from the same source and travel at the same propagation velocity appear as one dipping event in the time domain. In the f-k domain, this dipping event is represented as a straight line through the origin, assuming it contains the full frequency spectrum. By applying filters in the f-k domain, we can selectively remove or preserve certain dips, which correspond to different velocities.
+
+A 2D Fourier transform is required to move data into the f-k domain. The first transform converts the time axis into the frequency axis, while the second converts the spatial (x) axis into wavenumbers. The wavelength $\lambda$ of the spatial wave defines the wavenumber $k$ through $k=1/\lambda$. Just as frequency (cycles per second) is the inverse of period, wavenumber (cycles per meter) is the inverse of wavelength.
+
+In simple terms, steep events in the time domain correspond to low wavenumbers in the f-k domain, while flatter events correspond to higher wavenumbers. The direction of the dip is indicated by the sign of the wavenumber. This approach helps distinguish and filter events based on their apparent velocities, making it a key step in seismic preprocessing.
+
+The `fk` script is shown below.
+
+```bash
+#!/bin/sh
+
+killall ximage
+# FK filter
+
+# Parameter
+indata=Line_001_geom_tpow_d2.su
+dt=0.002
+dx=0.025
+ep=32
+perc=80
+
+slopes=-0.5,-0.3,0.3,0.5
+amps=0,1,1,0
+bias=0
+
+#-------------------------------------------
+#--------------- Before filter -------------
+#-------------------------------------------
+# Take one shot (i.e. use ep)
+suwind < $indata key=ep min=$ep max=$ep > tmp1
+
+# Plot before FK
+suximage < tmp1 perc=$perc title="Shot $ep before FK filter" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep before filter" &
+
+# Plot FK spectrum before filter
+suspecfk < tmp1 dt=$dt dx=$dx | suximage cmap=hsv2 x1end=120 title="FK spectrum before filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum before filter" &
+
+#-------------------------------------------
+#-------------- After filter ---------------
+#-------------------------------------------
+# FK filter in single shot
+sudipfilt < tmp1 dt=$dt dx=$dx slopes=$slopes amps=$amps bias=$bias > tmp2
+
+# Plot after FK
+suximage < tmp2 perc=$perc title="Shot $ep after FK filter" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep after filter" &
+
+# Plot FK spectrum after filter
+suspecfk < tmp2 dt=$dt dx=$dx | suximage cmap=hsv2 x1end=120 title="FK spectrum after filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum after filter" &
+
+#-------------------------------------------
+# Apply FK
+#-------------------------------------------
+sudipfilt < $indata dt=$dt dx=$dx slopes=$slopes amps=$amps bias=$bias > ${indata%.su}_fk.su
+
+rm -f tmp*
+```
+
+The filter test presented below, the filter slopes were chosen as -0.5,-0.3,0.3,0.5. The ground roll can be efectively removed by using fk filter. The filtered data and fk spectrum shows that flat slopes at low frequency were filtered out.
+![fk_filter](../img/img_6.png)
+
 ## Band-pass Filter
 A band-pass filter is a frequency-domain filter that works by multiplying the amplitude spectrum of an input trace with a filter operator. In Seismic Unix, the `sufilter` command is used for this process. It performs zero-phase frequency filtering, meaning the signal’s phase is preserved while its unwanted frequencies are removed. The zero-phase, band-limited wavelet used in the band-pass filter acts as the *filter operator*, shaping the signal to highlight the desired frequency range. In a simple term, band-pass filter is like a vibe check for your seismic data. It only keeps the frequencies that “fit the vibe” and removes the rest. 
 
@@ -27,8 +88,7 @@ A(f) =
 \end{cases}
 $$
 
-Now, let’s get into how this is actually done using the `sufilter` command in Seismic Unix.
-
+Now, let’s get into how this is actually done using the `sufilter` command in Seismic Unix. The `bpf` script is shown below.
 
 ```bash
 #!/bin/sh
@@ -92,10 +152,7 @@ rm -f tmp*
 ```
 
 The image below shows the result of the band-pass filter with cut-off frequencies of 10, 15, 70, and 80 Hz. Most of the ground-roll energy is removed after applying the filter. Increasing the low-cut frequency can further reduce noise, but it should be done carefully since it may also remove parts of the useful signal that share similar frequencies.
-![band-pass_filter](../img/img_6.png) 
-
-## F-K Filter
-
+![band-pass_filter](../img/img_7.png) 
 
 ## Deconvolution
 Deconvolution compresses the basic wavelet in the recorded seismogram, attenuates reverberations and short-period multiples, and improves temporal resolution, giving a clearer representation of subsurface reflectivity. Beyond simple wavelet compression, deconvolution also helps suppress multiple energy in the seismic section. This process is commonly implemented using an inverse filter as the deconvolution operator, which ideally recovers the earth's impulse response when applied to a seismogram. The inverse filter is typically estimated using the least-squares method.
@@ -107,7 +164,7 @@ $$
 
 where $r(t)$ is the recorded trace, $w(t)$ is the source wavelet, $r(t)$ is the reflectivity, and $n(t)$ is noise. Deconvolution aims to recover $r(t)$ by minimizing the wavelet effect through inverse filtering.
 
-In practice, deconvolution in Seismic Unix can be performed using the `supef` command, which applies predictive deconvolution to enhance resolution and reduce short-period multiples.
+In practice, deconvolution in Seismic Unix can be performed using the `supef` command, which applies predictive deconvolution to enhance resolution and reduce short-period multiples. The `decon` script is shown below.
 
 ```bash
 #!/bin/sh

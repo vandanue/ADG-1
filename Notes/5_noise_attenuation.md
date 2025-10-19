@@ -12,7 +12,7 @@ Table below gives example of common observed types of noise that can contribute 
 | Rig diffraction | Vehicles |
 | Power lines | Animals |
 
-In these notes, we'll break down how to reduce noise from sesimic data using band-pass filtering, f-k filtering, and deconvolution. We'll also compare when you switch up the order: “gain then filter” vs. “filter then gain.”
+In these notes, we'll break down how to reduce noise from sesimic data using band-pass filtering, f-k filtering, and deconvolution.
 
 ## F-K Filter
 Filtering in the frequency–wavenumber (f-k) domain, also known as dip or velocity filtering, is used to separate seismic energy based on its apparent velocity. All seismic events that originate from the same source and travel at the same propagation velocity appear as one dipping event in the time domain. In the f-k domain, this dipping event is represented as a straight line through the origin, assuming it contains the full frequency spectrum. By applying filters in the f-k domain, we can selectively remove or preserve certain dips, which correspond to different velocities.
@@ -169,9 +169,9 @@ In practice, deconvolution in Seismic Unix can be performed using the `supef` co
 
 ```bash
 #!/bin/sh
-#!/bin/sh
 
 killall ximage
+killall xwigb
 
 # Deconvolution
 
@@ -189,36 +189,37 @@ ntout=120
 #-------------------------------------------
 # Take one shot
 suwind < $indata key=ep min=$ep max=$ep > tmp1
-
+#-------------------------------------------
 # Plot before deconvolution
+#-------------------------------------------
 suximage < tmp1 perc=$perc title="Shot $ep before deconvolution" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep before deconvolution" &
-
+#-------------------------------------------
 # Autocorrelation before deconvolution
-suacor < tmp1 ntout=$ntout | suximage perc=$perc title="Autocorrelation before deconvolution" windowtitle="Autocorrelation"&
+#-------------------------------------------
+suacor < tmp1 ntout=$ntout sym=0 | suxwigb perc=100 x2beg=-2000 x2end=2000 title="Autocorrelation before deconvolution" label1="TWT [s]" label2="Offset [m]" key=offset windowtitle="Autocorrelation" &
 
 #-------------------------------------------
 #----------- After deconvolution ----------
 #-------------------------------------------
 # Deconvolution
 supef < tmp1 > tmp2 minlag=$minlag maxlag=$maxlag pnoise=$pnoise
-
+#-------------------------------------------
 # Plot after deconvolution
+#-------------------------------------------
 suximage < tmp2 perc=$perc title="Shot $ep after deconvolution" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep after deconvolution" &
-
+#-------------------------------------------
 # Autocorrelation after deconvolution
-suacor < tmp2 ntout=$ntout | suximage perc=$perc title="Autocorrelation after deconvolution" windowtitle="Autocorrelation" &
+#-------------------------------------------
+suacor < tmp2 ntout=$ntout sym=0 | suxwigb perc=100 x2beg=-2000 x2end=2000 title="Autocorrelation after deconvolution" label1="TWT [s]" label2="Offset [m]" key=offset windowtitle="Autocorrelation" &
 
-# Deconvolution to dataset
-supef < $indata > ${indata%.su}_decon.su minlag=$minlag maxlag=$maxlag pnoise=$pnoise
+#-------------------------------------------
+# Apply deconvolution
+#-------------------------------------------
+#supef < $indata > ${indata%.su}_decon.su minlag=$minlag maxlag=$maxlag pnoise=$pnoise
 
 rm -f tmp*
 ```
 
-## Gain-Filter
-
-## Filter-Gain
-
-### Conclusion
 
 ## Output Summary
 

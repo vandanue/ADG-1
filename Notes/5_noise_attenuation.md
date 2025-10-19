@@ -59,11 +59,11 @@ suximage < tmp1 perc=$perc title="Shot $ep before bandpass filter" label1="TWT [
 # Plot Gabor spectrogram (instantanous frequency)
 #-------------------------------------------
 # Take a few trace
-suwind < tmp1 key=tracf min=$trace_min max=$trace_max | sugabor | suximage xbox=990 ybox=5 wbox=330 hbox=470 cmap=hsv6 x2end=150 legend=1 label1="TWT [s]" label2="Frequency [Hz]" title="Gabor spectrogram trace $trace_min-$trace_max before filter" windowtitle="Gabor spectrogram" &
+suwind < tmp1 key=offset min=-50 max=50 | sustack key=dt | sugabor fmax=125 band=6 | suximage xbox=990 ybox=5 wbox=330 hbox=470 cmap=hsv6 x2end=150 legend=1 label1="TWT [s]" label2="Frequency [Hz]" title="Frequency spectrum (near offset) before filter" windowtitle="Gabor spectrogram" &
 #-------------------------------------------
 # Plot frequency spectrum
 #-------------------------------------------
-suwind < tmp1 key=tracf min=$trace_min max=$trace_max | sufft | suamp mode=amp | suop op=db | suxgraph style=normal -geometry 610x200+665+510 x1end=250 grid1=dot grid2=dot title="Amplitude spectrum before filter" label1="Frequency [Hz]" label2="Amplitude [dB]" windowtitle="Frequency spectrum" &
+suwind < tmp1 key=tracf min=$trace_min max=$trace_max | sufft | suamp mode=amp | suop op=db | suxgraph style=normal -geometry 330x200+665+510 x1end=250 grid1=dot grid2=dot title="Amplitude spectrum before filter" label1="Frequency [Hz]" label2="Amplitude [dB]" windowtitle="Frequency spectrum" &
 
 #-------------------------------------------
 #-------------- After filter ---------------
@@ -77,11 +77,11 @@ suximage < tmp2 perc=$perc title="Shot $ep after bandpass filter (cutoff = $f)" 
 # Plot Gabor spectrogram (instantanous frequency)
 #-------------------------------------------
 # Take a few trace
-suwind < tmp2 key=tracf min=$trace_min max=$trace_max | sugabor | suximage xbox=990 ybox=5 wbox=330 hbox=470 cmap=hsv6 x2end=150 legend=1 label1="TWT [s]" label2="Frequency [Hz]" title="Gabor spectrogram trace $trace_min-$trace_max after filter" windowtitle="Gabor spectrogram" &
+suwind < tmp2 kkey=offset min=-50 max=50 | sustack key=dt | sugabor fmax=125 band=6 | suximage xbox=990 ybox=5 wbox=330 hbox=470 cmap=hsv6 x2end=150 legend=1 label1="TWT [s]" label2="Frequency [Hz]" title="Frequency spectrum (near offset) after filter" windowtitle="Gabor spectrogram" &
 #-------------------------------------------
 # Plot frequency spectrum
 #-------------------------------------------
-suwind < tmp2 key=tracf min=$trace_min max=$trace_max | sufft | suamp mode=amp | suop op=db | suxgraph style=normal -geometry 610x200+665+510 x1end=250 grid1=dot grid2=dot title="Amplitude spectrum after filter (cutoff = $f)" label1="Frequency [Hz]" label2="Amplitude [dB]" windowtitle="Frequency spectrum" &
+suwind < tmp2 key=tracf min=$trace_min max=$trace_max | sufft | suamp mode=amp | suop op=db | suxgraph style=normal -geometry 330x200+665+510 x1end=250 grid1=dot grid2=dot title="Amplitude spectrum after filter (cutoff = $f)" label1="Frequency [Hz]" label2="Amplitude [dB]" windowtitle="Frequency spectrum" &
 
 #-------------------------------------------
 # Apply BPF

@@ -81,9 +81,11 @@ sugain agc=1 wagc=1 < ${indata%.su}_ep${ep}.su | suximage perc=80 &
 The idea of using $t$ (stands for time) squared is because we are transforming three dimensions to one. The seismic waves are spreading out in three dimensions, and the surface area on the expanding spherical wave increases in proportion to the radius squared. Thus the area on which the energy is distributed is increasing in proportion to time squared. But seismic amplitudes are proportiopnal to the suare root of the energy, so the basic geometry of energy spreading predicts only a single power of time for the spherical divergence correction.
 
 Multiplication by a power of time is a gain function of the form
+
 $$
 A_{x} = A_{0} . t^{x}
 $$
+
 where $A_{x}$ is amplitude at distance $x$, $A_{0}$ is the original amplitude, $t$ time, and $x$ a scalar. The scalar $x$ would be choosen so that the amplitude is balanced. 
 
 An additional power of $t$ arises from a simple absorption calculation. Absorption requires a model. The model I'll propose is too simple to explain everything about seismic absorption, but it nicely predicts the extra power of $t$ that experience shows we need.

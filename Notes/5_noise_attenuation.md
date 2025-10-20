@@ -27,10 +27,11 @@ The `fk` script is shown below.
 #!/bin/sh
 
 killall ximage
+killall xgraph
 # FK filter
 
 # Parameter
-indata=Line_001_geom_tpow_d2.su
+indata=Line_001_geom_cdp_agc_d2.su
 dt=0.002
 dx=0.025
 ep=32
@@ -50,7 +51,7 @@ suwind < $indata key=ep min=$ep max=$ep > tmp1
 suximage < tmp1 perc=$perc title="Shot $ep before FK filter" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep before filter" &
 
 # Plot FK spectrum before filter
-suspecfk < tmp1 dt=$dt dx=$dx | suximage cmap=hsv2 x1end=120 title="FK spectrum before filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum before filter" &
+suspecfk < tmp1 dt=$dt dx=$dx | suximage cmap=hsv2 x1end=120 legend=1 title="FK spectrum before filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum before filter" &
 
 #-------------------------------------------
 #-------------- After filter ---------------
@@ -62,7 +63,7 @@ sudipfilt < tmp1 dt=$dt dx=$dx slopes=$slopes amps=$amps bias=$bias > tmp2
 suximage < tmp2 perc=$perc title="Shot $ep after FK filter" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep after filter" &
 
 # Plot FK spectrum after filter
-suspecfk < tmp2 dt=$dt dx=$dx | suximage cmap=hsv2 x1end=120 title="FK spectrum after filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum after filter" &
+suspecfk < tmp2 dt=$dt dx=$dx | suximage cmap=hsv2 x1end=120 legend=1 title="FK spectrum after filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum after filter" &
 
 #-------------------------------------------
 # Apply FK
@@ -216,11 +217,14 @@ suacor < tmp2 ntout=$ntout | suxwigb perc=100 x2beg=-500 x2end=500 title="Autoco
 #-------------------------------------------
 # Apply deconvolution
 #-------------------------------------------
-#supef < $indata minlag=$minlag maxlag=$maxlag pnoise=$pnoise > ${indata%.su}_decon.su 
+supef < $indata minlag=$minlag maxlag=$maxlag pnoise=$pnoise > ${indata%.su}_decon.su 
 
 rm -f tmp*
 ```
+(this should be the output of decon, i'll insert it later)
 
+Brute stack after filtering
+![brute_stack_after-filter](../img/img_9.png)
 
 ## Output Summary
 

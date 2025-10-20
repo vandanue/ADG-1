@@ -188,6 +188,7 @@ ntout=120
 #----------- Before deconvolution ----------
 #-------------------------------------------
 # Take one shot
+#suwind < $indata key=ep min=$ep max=$ep | sunmo vnmo=1850 smute=20 > tmp1
 suwind < $indata key=ep min=$ep max=$ep > tmp1
 #-------------------------------------------
 # Plot before deconvolution
@@ -196,13 +197,13 @@ suximage < tmp1 perc=$perc title="Shot $ep before deconvolution" label1="TWT [s]
 #-------------------------------------------
 # Autocorrelation before deconvolution
 #-------------------------------------------
-suacor < tmp1 ntout=$ntout sym=0 | suxwigb perc=100 x2beg=-2000 x2end=2000 title="Autocorrelation before deconvolution" label1="TWT [s]" label2="Offset [m]" key=offset windowtitle="Autocorrelation" &
+suacor < tmp1 ntout=$ntout | suxwigb perc=100 x2beg=-500 x2end=500 title="Autocorrelation before deconvolution" label1="TWT [s]" label2="Offset [m]" key=offset windowtitle="Autocorrelation" &
 
 #-------------------------------------------
 #----------- After deconvolution ----------
 #-------------------------------------------
 # Deconvolution
-supef < tmp1 > tmp2 minlag=$minlag maxlag=$maxlag pnoise=$pnoise
+supef < tmp1 minlag=$minlag maxlag=$maxlag pnoise=$pnoise > tmp2 
 #-------------------------------------------
 # Plot after deconvolution
 #-------------------------------------------
@@ -210,12 +211,12 @@ suximage < tmp2 perc=$perc title="Shot $ep after deconvolution" label1="TWT [s]"
 #-------------------------------------------
 # Autocorrelation after deconvolution
 #-------------------------------------------
-suacor < tmp2 ntout=$ntout sym=0 | suxwigb perc=100 x2beg=-2000 x2end=2000 title="Autocorrelation after deconvolution" label1="TWT [s]" label2="Offset [m]" key=offset windowtitle="Autocorrelation" &
+suacor < tmp2 ntout=$ntout | suxwigb perc=100 x2beg=-500 x2end=500 title="Autocorrelation after deconvolution" label1="TWT [s]" label2="Offset [m]" key=offset windowtitle="Autocorrelation" &
 
 #-------------------------------------------
 # Apply deconvolution
 #-------------------------------------------
-#supef < $indata > ${indata%.su}_decon.su minlag=$minlag maxlag=$maxlag pnoise=$pnoise
+#supef < $indata minlag=$minlag maxlag=$maxlag pnoise=$pnoise > ${indata%.su}_decon.su 
 
 rm -f tmp*
 ```

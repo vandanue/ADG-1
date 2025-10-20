@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# skipping all header (the first 20 line), then remove 1V1 character
+# extract source number (Col2), sx (Col8), sy (Col9), selev (Col10), sstat (Col3)
+awk 'gsub(/1V1/,""){if(NR>20){print$2,$8,$9,$10,$3}}' Line_001.SPS > SPS_extract.txt
+
+# skipping all header (the first 20 line), then remove 1G1 character
+# extract source number (Col2), gx (Col8), gy (Col9), gelev (Col10), gstat (Col3)
+awk 'gsub(/1G1/,""){if(NR>20){print$2,$8,$9,$10,$3}}' Line_001.RPS > RPS_extract.txt

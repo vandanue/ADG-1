@@ -177,20 +177,21 @@ killall xwigb
 # Deconvolution
 
 # Parameter
-indata=Line_001_geom_tpow_d2_fk_bpf.su
-ep=32
-perc=80
+indata=Line_001_geom_cdp_agc_d2_fk_bpf.su
+ep=150
+perc=95
 minlag=0.02
-maxlag=0.1
+maxlag=0.13
 pnoise=0.001
-ntout=120
+ntout=750
+vnmo=1700,2750,3000
 
 #-------------------------------------------
 #----------- Before deconvolution ----------
 #-------------------------------------------
 # Take one shot
-#suwind < $indata key=ep min=$ep max=$ep | sunmo vnmo=1850 smute=20 > tmp1
-suwind < $indata key=ep min=$ep max=$ep > tmp1
+suwind < $indata key=ep min=$ep max=$ep | sunmo vnmo=$vnmo > tmp1
+#suwind < $indata key=ep min=$ep max=$ep > tmp1
 #-------------------------------------------
 # Plot before deconvolution
 #-------------------------------------------
@@ -198,7 +199,7 @@ suximage < tmp1 perc=$perc title="Shot $ep before deconvolution" label1="TWT [s]
 #-------------------------------------------
 # Autocorrelation before deconvolution
 #-------------------------------------------
-suacor < tmp1 ntout=$ntout | suxwigb perc=100 x2beg=-500 x2end=500 title="Autocorrelation before deconvolution" label1="TWT [s]" label2="Offset [m]" key=offset windowtitle="Autocorrelation" &
+suacor < tmp1 suacor ntout=$ntout | suximage perc=80 title="Autocorrelation before deconvolution" label1="TWT [s]" label2="Offset [m]" windowtitle="Autocorrelation" &
 
 #-------------------------------------------
 #----------- After deconvolution ----------
@@ -212,7 +213,7 @@ suximage < tmp2 perc=$perc title="Shot $ep after deconvolution" label1="TWT [s]"
 #-------------------------------------------
 # Autocorrelation after deconvolution
 #-------------------------------------------
-suacor < tmp2 ntout=$ntout | suxwigb perc=100 x2beg=-500 x2end=500 title="Autocorrelation after deconvolution" label1="TWT [s]" label2="Offset [m]" key=offset windowtitle="Autocorrelation" &
+suacor < tmp2 suacor ntout=$ntout | suximage perc=80 title="Autocorrelation after deconvolution" label1="TWT [s]" label2="Offset [m]" windowtitle="Autocorrelation" &
 
 #-------------------------------------------
 # Apply deconvolution

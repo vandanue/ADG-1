@@ -31,7 +31,8 @@ killall xgraph
 # FK filter
 
 # Parameter
-indata=Line_001_geom_cdp_agc_d2.su
+indata=Line_001_geom_agc_wagc0.5.su
+outdata=Line_001_geom_agc_wagc0.5_d2_fk.su
 dt=0.002
 dx=0.025
 ep=32
@@ -40,6 +41,11 @@ perc=80
 slopes=-0.5,-0.3,0.3,0.5
 amps=0,1,1,0
 bias=0
+
+#-------------------------------------------
+#---------- Apply spatial sampling ---------
+#-------------------------------------------
+sushw < $indata key=d2 a=0.025 > ${indata%.su}_d2.su
 
 #-------------------------------------------
 #--------------- Before filter -------------
@@ -51,7 +57,7 @@ suwind < $indata key=ep min=$ep max=$ep > tmp1
 suximage < tmp1 perc=$perc title="Shot $ep before FK filter" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep before filter" &
 
 # Plot FK spectrum before filter
-suspecfk < tmp1 dt=$dt dx=$dx | suximage cmap=hsv2 x1end=120 legend=1 title="FK spectrum before filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum before filter" &
+suspecfk < tmp1 dt=$dt dx=$dx | suximage perc=97 cmap=hsv2 x1end=120 legend=1 title="FK spectrum before filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum before filter" &
 
 #-------------------------------------------
 #-------------- After filter ---------------
@@ -63,12 +69,12 @@ sudipfilt < tmp1 dt=$dt dx=$dx slopes=$slopes amps=$amps bias=$bias > tmp2
 suximage < tmp2 perc=$perc title="Shot $ep after FK filter" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep after filter" &
 
 # Plot FK spectrum after filter
-suspecfk < tmp2 dt=$dt dx=$dx | suximage cmap=hsv2 x1end=120 legend=1 title="FK spectrum after filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum after filter" &
+suspecfk < tmp2 dt=$dt dx=$dx | suximage perc=97 cmap=hsv2 x1end=120 legend=1 title="FK spectrum after filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum after filter" &
 
 #-------------------------------------------
 # Apply FK
 #-------------------------------------------
-sudipfilt < $indata dt=$dt dx=$dx slopes=$slopes amps=$amps bias=$bias > ${indata%.su}_fk.su
+sudipfilt < ${indata%.su}_d2.su dt=$dt dx=$dx slopes=$slopes amps=$amps bias=$bias > $outdata
 
 rm -f tmp*
 ```
@@ -100,8 +106,8 @@ killall xgraph
 # Bandpass filter
 
 # Parameter
-indata=Line_001_geom_tpow_d2_fk.su
-f=10,15,70,80
+indata=Line_001_geom_agc_wagc0.5_d2_fk.su
+f=10,15,55,60
 amps=0,1,1,0
 perc=80
 ep=32
@@ -130,7 +136,7 @@ suwind < tmp1 key=tracf min=$trace_min max=$trace_max | sufft | suamp mode=amp |
 #-------------- After filter ---------------
 #-------------------------------------------
 # Bandpass filter in single shot
-sufilter < tmp1 f=$f amps=$amps verbose=1 > tmp2
+sufilter < tmp1 f=$f amps=$amps > tmp2
 
 # Plot after filter
 suximage < tmp2 perc=$perc title="Shot $ep after bandpass filter (cutoff = $f)" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep after bandpass filter" &
@@ -147,7 +153,7 @@ suwind < tmp2 key=tracf min=$trace_min max=$trace_max | sufft | suamp mode=amp |
 #-------------------------------------------
 # Apply BPF
 #-------------------------------------------
-sufilter < $indata f=$f amps=$amps verbose=1 > ${indata%.su}_bpf.su
+sufilter < $indata f=$f amps=$amps > ${indata%.su}_bpf${f}.su
 
 rm -f tmp*
 ```
@@ -173,24 +179,26 @@ In practice, deconvolution in Seismic Unix can be performed using the `supef` co
 
 killall ximage
 killall xwigb
+killall xgraph
 
 # Deconvolution
 
 # Parameter
-indata=Line_001_geom_cdp_agc_d2_fk_bpf.su
+indata=Line_001_geom_agc_wagc0.5_d2_fk_bpf10,15,55,60.su
 ep=150
 perc=95
 minlag=0.02
-maxlag=0.13
+maxlag=0.1
 pnoise=0.001
-ntout=750
+ntout=120
+tnmo=0.1,1,2
 vnmo=1700,2750,3000
 
 #-------------------------------------------
 #----------- Before deconvolution ----------
 #-------------------------------------------
 # Take one shot
-suwind < $indata key=ep min=$ep max=$ep | sunmo vnmo=$vnmo > tmp1
+suwind < $indata key=ep min=$ep max=$ep | sunmo tnmo=$tnmo vnmo=$vnmo > tmp1
 #suwind < $indata key=ep min=$ep max=$ep > tmp1
 #-------------------------------------------
 # Plot before deconvolution
@@ -222,11 +230,42 @@ supef < $indata minlag=$minlag maxlag=$maxlag pnoise=$pnoise > ${indata%.su}_dec
 
 rm -f tmp*
 ```
-(this should be the output of decon, i'll insert it later)
 
-Brute stack after filtering
-![brute_stack_after-filter](../img/img_9.png)
+After some filtering process, we can QC the stack
+```bash
+#!/bin/sh
+
+killall ximage
+killall xgraph
+
+# Brute stack
+data1=Line_001_geom_agc_wagc0.5_d2_fk_bpf10,15,55,60.su
+data2=Line_001_geom_agc_wagc0.5_d2_fk_bpf10,15,55,60_decon.su
+vnmo=1700,2750,3000
+tnmo=0.1,1,2
+
+# Sort to CDP
+susort cdp offset < $data1 > tmp1
+susort cdp offset < $data2 > tmp2
+
+# Before Decon
+sunmo < tmp1 vnmo=$vnmo tnmo=$tnmo | sustack > filter_stack.su
+suximage < filter_stack.su perc=90 cmap=hsv5 title="Brute stack V0 after FK filter and BPF" label1="Time [s]" label2="CDP" windowtitle="Brute stack" &
+
+# After Decon
+sunmo < tmp2 vnmo=$vnmo tnmo=$tnmo | sustack > decon_stack.su
+suximage < decon_stack.su perc=90 cmap=hsv5 title="Brute stack V0 after decon" label1="Time [s]" label2="CDP" windowtitle="Brute stack" &
+
+rm -f tmp*
+```
+
+### Brute Stack Comparison Before and After Deconvolution
+![brute_stack_before_decon](../img/img_9.png)
+![brute_stack_after_decon](../img/img_10.png)
+
+Notice that the reflector is enhanced and multiples are attenuated between 1.2–1.4 s.
 
 ## Output Summary
 
 ## Parameter Summary
+*This section will be updated with a summary of the output results.*

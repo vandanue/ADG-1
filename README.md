@@ -9,6 +9,10 @@ flowchart TD
     B --> C[Apply Geometry]
     C --> D["Gain (Amplitude Correction)"]
     D --> E[Filtering/Noise Attenuation]
+    E --|Velocity Analysis|--> F[NMO]
+    F --> G[Statics Correction]
+    G --> H[Stacking]
+    H --> I[Migration]
 ```
 
 ## Prerequisites & Dependencies

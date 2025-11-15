@@ -13,6 +13,7 @@ flowchart TD
     F --> G[Statics Correction]
     G --> H[Stacking]
     H --> I[Migration]
+    I --> J[SEGY Output]
 ```
 
 ## Prerequisites & Dependencies

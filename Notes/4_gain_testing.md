@@ -160,5 +160,5 @@ This step can actually be shortened by using command piping (`|`) instead of cre
 | 4    | Single shot after time-power gain (tpow = 2) | `Line_001_geom_ep32_tpow.su` |
 | 5    | Full dataset after time-power gain applied   | `Line_001_geom_tpow.su`      |
 
-## Parameter Summary
-> `sugain` using `agc`, `sugain` using `tpow=2`
+## Script Used
+`gain.sh`

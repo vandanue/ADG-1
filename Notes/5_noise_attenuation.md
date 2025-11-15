@@ -38,7 +38,7 @@ dx=0.025
 ep=32
 perc=80
 
-slopes=-0.5,-0.3,0.3,0.5
+slopes=-0.5,-0.2,0.2,0.5
 amps=0,1,1,0
 bias=0
 
@@ -57,7 +57,7 @@ suwind < $indata key=ep min=$ep max=$ep > tmp1
 suximage < tmp1 perc=$perc title="Shot $ep before FK filter" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep before filter" &
 
 # Plot FK spectrum before filter
-suspecfk < tmp1 dt=$dt dx=$dx | suximage perc=97 cmap=hsv2 x1end=120 legend=1 title="FK spectrum before filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum before filter" &
+suspecfk < tmp1 dt=$dt dx=$dx | suximage perc=97 cmap=hsv2 x1end=120 legend=1 title="FK spectrum before filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum" &
 
 #-------------------------------------------
 #-------------- After filter ---------------
@@ -69,17 +69,17 @@ sudipfilt < tmp1 dt=$dt dx=$dx slopes=$slopes amps=$amps bias=$bias > tmp2
 suximage < tmp2 perc=$perc title="Shot $ep after FK filter" label1="TWT [s]" label2="Trace" windowtitle="Shot $ep after filter" &
 
 # Plot FK spectrum after filter
-suspecfk < tmp2 dt=$dt dx=$dx | suximage perc=97 cmap=hsv2 x1end=120 legend=1 title="FK spectrum after filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum after filter" &
+suspecfk < tmp2 dt=$dt dx=$dx | suximage perc=97 cmap=hsv2 x1end=120 legend=1 title="FK spectrum after filter" label1="Frequecy [Hz]" label2="Wavenumber [1/km]" windowtitle="FK spectrum" &
 
 #-------------------------------------------
-# Apply FK
+#----------------- Apply FK ----------------
 #-------------------------------------------
 sudipfilt < ${indata%.su}_d2.su dt=$dt dx=$dx slopes=$slopes amps=$amps bias=$bias > $outdata
 
 rm -f tmp*
 ```
 
-The filter test presented below, the filter slopes were chosen as -0.5,-0.3,0.3,0.5. The ground roll can be efectively removed by using fk filter. The filtered data and fk spectrum shows that flat slopes at low frequency were filtered out.
+The filter test presented below, the filter slopes were chosen as -0.5,-0.2,0.2,0.5. The ground roll can be efectively removed by using fk filter. The filtered data and fk spectrum shows that flat slopes at low frequency were filtered out.
 ![fk_filter](../img/img_6.png)
 
 ## Band-pass Filter
@@ -107,7 +107,7 @@ killall xgraph
 
 # Parameter
 indata=Line_001_geom_agc_wagc0.5_d2_fk.su
-f=10,15,55,60
+f=15,20,70,80
 amps=0,1,1,0
 perc=80
 ep=32
@@ -144,21 +144,21 @@ suximage < tmp2 perc=$perc title="Shot $ep after bandpass filter (cutoff = $f)" 
 # Plot Gabor spectrogram (instantanous frequency)
 #-------------------------------------------
 # Take a few trace
-suwind < tmp2 kkey=offset min=-50 max=50 | sustack key=dt | sugabor fmax=125 band=6 | suximage xbox=990 ybox=5 wbox=330 hbox=470 cmap=hsv6 x2end=150 legend=1 label1="TWT [s]" label2="Frequency [Hz]" title="Frequency spectrum (near offset) after filter" windowtitle="Gabor spectrogram" &
+suwind < tmp2 key=offset min=-50 max=50 | sustack key=dt | sugabor fmax=125 band=6 | suximage xbox=990 ybox=5 wbox=330 hbox=470 cmap=hsv6 x2end=150 legend=1 label1="TWT [s]" label2="Frequency [Hz]" title="Frequency spectrum (near offset) after filter" windowtitle="Gabor spectrogram" &
 #-------------------------------------------
 # Plot frequency spectrum
 #-------------------------------------------
 suwind < tmp2 key=tracf min=$trace_min max=$trace_max | sufft | suamp mode=amp | suop op=db | suxgraph style=normal -geometry 330x200+665+510 x1end=250 grid1=dot grid2=dot title="Amplitude spectrum after filter (cutoff = $f)" label1="Frequency [Hz]" label2="Amplitude [dB]" windowtitle="Frequency spectrum" &
 
 #-------------------------------------------
-# Apply BPF
+#---------------- Apply BPF ----------------
 #-------------------------------------------
 sufilter < $indata f=$f amps=$amps > ${indata%.su}_bpf${f}.su
 
 rm -f tmp*
 ```
 
-The image below shows the result of the band-pass filter with cut-off frequencies of 10, 15, 70, and 80 Hz. Most of the ground-roll energy is removed after applying the filter. Increasing the low-cut frequency can further reduce noise, but it should be done carefully since it may also remove parts of the useful signal that share similar frequencies.
+The image below shows the result of the band-pass filter with cut-off frequencies of 15, 20, 70, and 80 Hz. Most of the ground-roll energy is removed after applying the filter. Increasing the low-cut frequency can further reduce noise, but it should be done carefully since it may also remove parts of the useful signal that share similar frequencies.
 ![band-pass_filter](../img/img_7.png) 
 
 ## Deconvolution
@@ -172,7 +172,7 @@ $$
 
 where $r(t)$ is the recorded trace, $w(t)$ is the source wavelet, $r(t)$ is the reflectivity, and $n(t)$ is noise. Deconvolution aims to recover $r(t)$ by minimizing the wavelet effect through inverse filtering.
 
-In practice, deconvolution in Seismic Unix can be performed using the `supef` command, which applies predictive deconvolution to enhance resolution and reduce short-period multiples. The `decon` script is shown below.
+In practice, deconvolution in Seismic Unix can be performed using the supef command, which applies predictive deconvolution to enhance resolution and suppress short-period multiples. The `decon` script is shown below. The parameters used in the predictive deconvolution process include `minlag` and `maxlag`. To determine these parameters, the autocorrelation of the trace should be analyzed prior to applying deconvolution. The `minlag` is typically chosen based on the time of the second zero crossing after the first peak, while the `maxlag` is selected according to the duration of the reverberations.
 
 ```bash
 #!/bin/sh
@@ -184,7 +184,7 @@ killall xgraph
 # Deconvolution
 
 # Parameter
-indata=Line_001_geom_agc_wagc0.5_d2_fk_bpf10,15,55,60.su
+indata=Line_001_geom_agc_wagc0.5_d2_fk_bpf15,20,70,80.su
 ep=150
 perc=95
 minlag=0.02
@@ -224,23 +224,30 @@ suximage < tmp2 perc=$perc title="Shot $ep after deconvolution" label1="TWT [s]"
 suacor < tmp2 suacor ntout=$ntout | suximage perc=80 title="Autocorrelation after deconvolution" label1="TWT [s]" label2="Offset [m]" windowtitle="Autocorrelation" &
 
 #-------------------------------------------
-# Apply deconvolution
+#----------- Apply deconvolution -----------
 #-------------------------------------------
 supef < $indata minlag=$minlag maxlag=$maxlag pnoise=$pnoise > ${indata%.su}_decon.su 
 
 rm -f tmp*
 ```
 
+The autocorrelation below shows that the second zero crossing occurs at 0.04 s, which indicates that the appropriate `minlag` is 0.04 s. The reverberation continues until approximately 0.08 s, which can be used as the `maxlag`.
+![before-decon](../img/img_8.png)
+
+After applying deconvolution, the temporal resolution increases and the reverberations are suppressed. This improvement occurs because predictive deconvolution effectively compresses the seismic wavelet and removes short-period multiples that obscure primary reflections. 
+![after-decon](../img/img_9.png)
+
 After some filtering process, we can QC the stack
 ```bash
 #!/bin/sh
 
 killall ximage
+killall xwigb
 killall xgraph
 
 # Brute stack
-data1=Line_001_geom_agc_wagc0.5_d2_fk_bpf10,15,55,60.su
-data2=Line_001_geom_agc_wagc0.5_d2_fk_bpf10,15,55,60_decon.su
+data1=Line_001_geom_agc_wagc0.5_d2_fk_bpf15,20,70,80.su
+data2=Line_001_geom_agc_wagc0.5_d2_fk_bpf15,20,70,80_decon.su
 vnmo=1700,2750,3000
 tnmo=0.1,1,2
 
@@ -256,16 +263,21 @@ suximage < filter_stack.su perc=90 cmap=hsv5 title="Brute stack V0 after FK filt
 sunmo < tmp2 vnmo=$vnmo tnmo=$tnmo | sustack > decon_stack.su
 suximage < decon_stack.su perc=90 cmap=hsv5 title="Brute stack V0 after decon" label1="Time [s]" label2="CDP" windowtitle="Brute stack" &
 
-rm -f tmp*
+rm -f *stack.su tmp*
 ```
 
 ### Brute Stack Comparison Before and After Deconvolution
-![brute_stack_before_decon](../img/img_9.png)
-![brute_stack_after_decon](../img/img_10.png)
+![brute-stack-after-decon](../img/img_10.png)
 
 Notice that the reflector is enhanced and multiples are attenuated between 1.2–1.4 s.
 
 ## Output Summary
+| Step | Description                                  | Output File                  |
+| ---- | -------------------------------------------- | ---------------------------- |
+| 1    | Dataset after spatial sampling is applied              | `Line_001_geom_agc_wagc0.5_d2.su`      |
+| 2    | Dataset after F-K filter is applied                | `Line_001_geom_agc_wagc0.5_d2_fk.su`  |
+| 3    | Dataset after band-pass filter is applied               | `Line_001_geom_agc_wagc0.5_d2_fk_bpf15,20,70,80.su`       |
+| 4    | Dataset after deconvolution is applied | `Line_001_geom_agc_wagc0.5_d2_fk_bpf15,20,70,80_decon.su` |
 
-## Parameter Summary
-*This section will be updated with a summary of the output results.*
+## Script Used
+`fk.sh`, `bpf.sh`, `decon.sh`, `brute_stack.sh`

@@ -98,7 +98,9 @@ After NMO correction, the gathers are stacked to produce a preliminary stacked s
 sustack < Line_001_v1_cdp.su | suximage perc=90 cmap=hsv4 title="Brute stack V1 after velan" label1="Time [s]" label2="CDP" windowtitle="Brute stack" &
 ```
 
-This brute stack provides an early view of reflector continuity before applying statics correction and further velocity refinement.
+![v1-velan](../img/img_13.png)
+
+This stack provides an early view of reflector continuity before applying statics correction and further velocity refinement.
 
 ## Output Summary
 | Step | Description                                  | Output File                  |

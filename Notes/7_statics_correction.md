@@ -44,3 +44,11 @@ Finally, the corrected data are stacked:
 ```bash
 sustack < Line_001_geom_agc_wagc0.5_d2_fk_bpf15,20,70,80_decon_estat_cdp_v2_resstat.su > Line_001_stack_v2_resstat.su
 ```
+
+You can see the stacking image after statics correction and residual statics are applied.
+
+```bash
+suximage perc=90 title="Line_001 stack v2 after residual statics" label1="TWT [s]" label2="CDP" cmap=hsv4 < Line_001_stack_v2_resstat.su &
+```
+
+![stack-after-resstat](../img/img_14.png)

@@ -12,7 +12,7 @@ flowchart TD
     E --> F[Amplitude Recovery]
     F --> G[/Amplitude Corrected Data/]
     G --> H[F-K Filter]
-    H --> I[/F-K FIltered Data/]
+    H --> I[/F-K Filtered Data/]
     I --> J[Band-Pass Filter]
     J --> K[/Band-Pass Filtered Data/]
     K --> L[Deconvolution]
@@ -42,9 +42,7 @@ flowchart TD
         Z8 --> |Satisfied ?| Z9[/NMO Corrected Data/]
     end
 
-    Q --> |Selected Velocity, <br/> sort to CDP| R[NMO]
-    R --> S[/NMO Corrected Data/]
-    S --> T[Stacking]
+    Z9 --> |Selected Velocity| T[Stacking]
     T --> U[/Stacked Data/]
     U --> V[Time Migration]
     V --> W[/Time Migrated Data/]

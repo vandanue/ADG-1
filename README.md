@@ -19,35 +19,37 @@ flowchart TD
     L --> M[/Deconvolved Data/]
     subgraph First Pass
     direction LR
-        M --> |QC| Z[Velocity Analysis]
-        Z --> ZZ[NMO]
-        ZZ --> |Satisfied ?| ZZZ[/NMO Corrected Data/]
+        M --> |Sort to CDP| Z1[Velocity Analysis]
+        Z1 --> Z2[NMO]
+        Z2 --> |Satisfied ?| Z3[/NMO Corrected Data/]
     end
 
     M --> N[Elevation Statics Correction]
     N --> O[/Elevation Statics Corrected Data/] 
     subgraph Second Pass
     direction LR
-        O --> |QC| ZZZZ[Velocity Analysis]
-        ZZZZ --> ZZZZZ[NMO]
-        ZZZZZ --> |Satisfied ?| ZZZZZZ[/NMO Corrected Data/]
+        O --> |Sort to CDP| Z4[Velocity Analysis]
+        Z4 --> Z5[NMO]
+        Z5 --> |Satisfied ?| Z6[/NMO Corrected Data/]
     end
 
     O --> P[Residual Statics Correction]
     P --> Q[/Residual Statics <br/> Corrected Data/]
     subgraph Third Pass
     direction LR
-        Q --> ZZZZZZZ[Velocity Analysis]
-        ZZZZZZZ --> ZZZZZZZZ[NMO]
-        ZZZZZZZZ --> |Satisfied ?| ZZZZZZZZZ[/NMO Corrected Data/]
+        Q --> |Sort to CDP| Z7[Velocity Analysis]
+        Z7 --> Z8[NMO]
+        Z8 --> |Satisfied ?| Z9[/NMO Corrected Data/]
     end
 
-    Q --> |Selected Velocity| R[Stacking]
-    R --> S[/Stacked Data/]
-    S --> T[Time Migration]
-    T --> U[/Time Migrated Data/]
-    U --> V[Convert SU to SEGY]
-    V --> W[SEGY Output]
+    Q --> |Selected Velocity, <br/> sort to CDP| R[NMO]
+    R --> S[/NMO Corrected Data/]
+    S --> T[Stacking]
+    T --> U[/Stacked Data/]
+    U --> V[Time Migration]
+    V --> W[/Time Migrated Data/]
+    W --> X[Convert SU to SEGY]
+    X --> Y[/SEGY Output/]
 ```
 
 ## Prerequisites & Dependencies

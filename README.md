@@ -5,20 +5,49 @@ Course notes for the Geophysical Data Analysis 1 course (2025/2026 - 1) taught b
 
 ```mermaid
 flowchart TD
-    A[Raw Seismic Data] --> B[Convert SEGY to SU]
-    B --> C[Apply Geometry]
-    C --> D["Gain (Amplitude Correction)"]
-    D --> E[Filtering/Noise Attenuation]
-    E --> F[Velocity Analysis]
-    
-    F --> Z(( ))
-    Z --> G[NMO Correction]
-    G --> |Need improvement?| Z
-    G --> |Satisfied| H[Static Correction]
-    
-    H --> I[Stacking]
-    I --> J[Migration]
-    J --> K[SEGY Output]
+    A[/Raw Seismic Data/] --> B[Convert SEGY to SU]
+    B --> C[/Raw Data SU Format/]
+    C --> D[Apply Geometry]
+    D --> E[/Geometry Applied Raw Data/]
+    E --> F[Amplitude Recovery]
+    F --> G[/Amplitude Corrected Data/]
+    G --> H[F-K Filter]
+    H --> I[/F-K FIltered Data/]
+    I --> J[Band-Pass Filter]
+    J --> K[/Band-Pass Filtered Data/]
+    K --> L[Deconvolution]
+    L --> M[/Deconvolved Data/]
+    subgraph First Pass
+    direction LR
+        M --> |QC| Z[Velocity Analysis]
+        Z --> ZZ[NMO]
+        ZZ --> |Satisfied ?| ZZZ[/NMO Corrected Data/]
+    end
+
+    M --> N[Elevation Statics Correction]
+    N --> O[/Elevation Statics Corrected Data/] 
+    subgraph Second Pass
+    direction LR
+        O --> |QC| ZZZZ[Velocity Analysis]
+        ZZZZ --> ZZZZZ[NMO]
+        ZZZZZ --> |Satisfied ?| ZZZZZZ[/NMO Corrected Data/]
+    end
+
+    O --> P[Residual Statics Correction]
+    P --> Q[/Residual Statics <br/> Corrected Data/]
+    subgraph Third Pass
+    direction LR
+        Q --> ZZZZZZZ[Velocity Analysis]
+        ZZZZZZZ --> ZZZZZZZZ[NMO]
+        ZZZZZZZZ --> |Satisfied ?| ZZZZZZZZZ[/NMO Corrected Data/]
+    end
+
+    Q --> |Selected Velocity| R[Stacking]
+    R --> S[/Stacked Data/]
+    S --> T[Time Migration]
+    T --> U[/Time Migrated Data/]
+    U --> V[Convert SU to SEGY]
+    V --> W[SEGY Output]
 ```
 
 ## Prerequisites & Dependencies

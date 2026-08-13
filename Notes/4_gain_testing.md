@@ -148,7 +148,7 @@ rm -f tmp*
 ```
 
 This step can actually be shortened by using command piping (`|`) instead of creating temporary files between processes. The brute stack from `tpow` gain appears as follows
-![brute_stack-tpow](../img/img_8.png)
+![brute_stack-tpow](../img/tpow_stack.png)
 
 ## Output Summary
 

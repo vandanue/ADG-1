@@ -1,15 +1,26 @@
 # Seismic Unix Installation
-
-Download Seismic Unix from this [website](https://wiki.seismic-unix.org/start). Make sure you download the latest version (44R28). After downloading, I would recommend to place the file in Linux directory instead of Windows (in the Downloads folder by default). 
-
 ## Preparation
-
 - Make sure you are in Linux home directory
 ```bash
 cd ~
 ```
 
-Move the zipped file from Windows directory to the Linux directory:
+There are two ways to download Seismic Unix:
+
+### A. Download from GitHub
+You can `clone` Seismic Unix from the source code
+```bash
+git clone https://github.com/JohnWStockwellJr/SeisUnix.git
+```
+
+After cloning are completed, go to the Seismic Unix folder and then follow the installation steps in the next section.
+```bash
+cd SeisUnix
+```
+
+
+### B. Download from CWP website
+Download Seismic Unix from this [website](https://wiki.seismic-unix.org/start). Make sure you download the latest version (44R28). After downloading, I would recommend to place the file in Linux directory instead of Windows (in the Downloads folder by default). Move the zipped file from Windows directory to the Linux directory:
 ```bash
 mkdir SeisUnix && mv /mnt/c/Users/<username>/Downloads/cwp_su_all_44R28.tgz SeisUnix/
 ```
@@ -55,7 +66,7 @@ cd ~/SeisUnix/src
 ```
 Since we use Ubuntu 24, copy the `Makefile.config_Linux_Ubuntu_22.04` from config folder:
 ```bash
-cp ./config/Makefile.config_Linux_Ubuntu_22.04 ./Makefile.config
+cp ./configs/Makefile.config_Linux_Ubuntu_22.04 ./Makefile.config
 ```
 This step will replace Makefile.config with the Ubuntu 22 config file (but works perfectly with Ubuntu 24).
 

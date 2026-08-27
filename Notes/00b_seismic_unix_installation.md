@@ -47,6 +47,10 @@ Type `y` for each prompt.
 
 2. After installing the dependencies, we configure the environment variables. Add the following commands to your profile, by default, Ubuntu uses `~/.bashrc`.
 ```bash
+gedit ~/.bashrc &
+```
+
+```bash
 export CWPROOT=$HOME/SeisUnix
 export PATH=$PATH:$CWPROOT/bin:.
 ```

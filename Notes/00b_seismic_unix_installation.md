@@ -41,16 +41,7 @@ sudo apt-get install gedit
 ## Installation Steps
 1. Install the required dependencies:
 ```bash
-sudo apt install build-essential
-sudo apt install gfortran
-sudo apt install libx11-dev
-sudo apt install libxt-dev
-sudo apt install freeglut3-dev
-sudo apt install libxmu-dev libxi-dev
-sudo apt install libc6
-sudo apt install libuil4
-sudo apt install libmotif-dev
-sudo apt install libtirpc-dev
+sudo apt install build-essential gfortran libx11-dev libxt-dev freeglut3-dev libxmu-dev libxi-dev libc6 libuil4 libmotif-dev libtirpc-dev -y
 ```
 Type `y` for each prompt.
 

@@ -19,6 +19,7 @@ Shell scripting can be used with SU to:
 In essence, shell scripting turns a collection of SU commands into a repeatable, shareable, and more efficient processing workflow.
 
 ## Example: Seismic Unix Workflow in Bash
+
 Below is a simple Bash script demonstrating a basic workflow for bandpass filtering seismic data:
 
 ```bash
@@ -28,15 +29,21 @@ Below is a simple Bash script demonstrating a basic workflow for bandpass filter
 
 killall xwigb ximage
 
+# Processing parameter
+f=15,20,70,80
+
+# Data directory
 DATA_DIR=../ozdata
 
 DATA=$DATA_DIR/ozdata.39.su
 
 IMG_DIR=../img
 
+# Processing flow
+
 suximage < $DATA perc=95 title="Oz data before filter" label1="Time" label2="Trace" &
 
-sufilter f=15,20,70,80 < $DATA > tmp1
+sufilter f=$f < $DATA > tmp1
 
 suximage < tmp1 perc=95 title="Oz data after filter" label1="Time" label2="Trace" &
 
@@ -44,25 +51,30 @@ rm tmp*
 ```
 
 The output should look like this:
+
 ![Oz data filter](../img/oz_merge.png)
-(left) Oz data before before filtering and (right) oz data after filtering.
+
+Left: Oz data before filtering. Right: Oz data after filtering.
 
 ### Understanding the Script
+
 - `#!/bin/bash` is called a **shebang** (or hashbang). It tells the operating system to use Bash as the shell interpreter for this script.
 
 - `killall xwigb ximage` closes any currently running `xwigb` and `ximage` processes. This is useful for cleaning up previously opened SU visualization windows before starting a new workflow.
+
+- `f=15,20,70,80` defines the four corner frequencies used for the bandpass filter. Storing them in a variable makes it easier to change the filtering parameters later.
 
 - `DATA_DIR=../ozdata` defines the location of the Oz data relative to the directory where the script is being run.
 
 - `DATA=$DATA_DIR/ozdata.39.su` defines the specific SU data file that will be used as the input.
 
-- `$DATA_DIR` is a variable that stores the path `../ozdata`. The `$DATA` variable can then be used later in the script to refer to the input data file.
+- `$DATA_DIR` is a variable that stores the path `../ozdata`. The `$DATA` variable can then be used later in the workflow to refer to the input data file.
 
 - `IMG_DIR=../img` defines a directory for image output. In this particular script, however, the variable is not actually used later in the workflow.
 
 - `suximage < $DATA ...` displays the original seismic data before filtering. The `<` redirects the contents of `$DATA` into `suximage`.
 
-- `sufilter f=15,20,70,80 < $DATA > tmp1` applies a bandpass filter to the input data. The filter frequencies are `15, 20, 70, 80` Hz, and the filtered output is redirected to the temporary file `tmp1`.
+- `sufilter f=$f < $DATA > tmp1` applies a bandpass filter using the frequencies stored in `$f`. The filtered output is redirected to the temporary file `tmp1`.
 
 - `suximage < tmp1 ...` displays the filtered seismic data stored in `tmp1`.
 

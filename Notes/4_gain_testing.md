@@ -5,32 +5,70 @@ There are two type of gain algorithm, data dependent and data independent. `suga
 ### Automatic Gain Control (AGC)
 First, we'll try data dependent amplitude correction using Automatic Gain Control (AGC). Before visualizing data, AGC is often applied. It means subdividing each trace into windoes with user-specific length. The RMS amplitude within the window is calculated to the samples within the window. AGC is an axample of amplitude information from the data is used to scale it.
 
-To apply AGC to our dataset, the following command is used:
+I'm using Nankai dataset that used in Moore et. al. (1990) paper.
 ```bash
-#!/bin/sh
+#!/bin/bash
 
-# Parameter
-indata=Line_001_geom.su
-ep=32
-perc=80
+killall xwigb ximage
 
-# Take one shot (ep 32)
-suwind < $indata key=ep min=$ep max=$ep > ${indata%.su}_ep${ep}.su
+# Processing parameter
+cdp_min=4030
+cdp_max=4100
+fldr_min=1900
+fldr_max=1900
 
-# Plot before AGC
-suximage < ${indata%.su}_ep${ep}.su perc=$perc title="Plot ep = $ep before AGC" &
+agc=1
 
-# Do AGC
-sugain agc=1 < ${indata%.su}_ep${ep}.su > ${indata%.su}_ep${ep}_agc.su
+# Plot preferences
+perc=99
 
-# Plot after AGC
-suximage < ${indata%.su}_ep${ep}_agc.su perc=$perc title="Plot ep = $ep after AGC" &
+# Data directory
+DATA_DIR=../ozdata/Nshot
+DATA=$DATA_DIR/Nshots.su
 
-# Apply AGC to dataset
-sugain agc=1 < $indata > ${indata%.su}_agc.su
+IMG_DIR=../img
+
+# Processing flow
+# Window data
+suwind < $DATA key=fldr min=$fldr_min max=$fldr_max > tmp1
+
+# Gain gather
+sugain agc=1 < tmp1 > tmp2
+
+# Gain all data
+sugain agc=1 < $DATA > tmp3
+
+# Sort data
+# Before gain
+susort cdp offset < $DATA > tmp4
+# After gain
+susort cdp offset < tmp3 > tmp5
+
+# Stack data
+# Before gain
+sustack < tmp4 > tmp6
+# After gain
+sustack < tmp5 > tmp7
+
+#################################################
+# Plot data
+#################################################
+# Plot gather before gain
+suxwigb < tmp1 perc=98 title="Nankai shot before gain" label1="Time" label2="Trace" &
+
+# Plot gather after gain
+suxwigb < tmp2 perc=98 title="Nankai shot after AGC gain" label1="Time" label2="Trace" &
+
+# Plot stacked data before gain
+suximage < tmp6 perc=98 cmap=hsv4 x1beg=5 title="Nankai stack before gain" label1="Time (s)" label2="CDP" &
+
+# Plot stacked data after gain
+suximage < tmp7 perc=98 cmap=hsv4 x1beg=5 title="Nankai stack after AGC gain" label1="Time (s)" label2="CDP" &
+
+rm tmp*
 ```
 The output will loke like this:
-![before-after_AGC](../img/img_4.png)
+![before-after_AGC](../img/nshots_agc.png)
 The left image is seismic before AGC and the right image is after AGC is applied.
 
 What about the size of the sub-dividing windows? Isn't the user supposed to supply this piece of information? The reason is in the `sugain` command will use default values if we don't supply any. To see default values, type `sugain` in terminal to see all options:
@@ -71,10 +109,13 @@ What about the size of the sub-dividing windows? Isn't the user supposed to supp
         vred=0          reducing velocity of data to use with tpow
 ```
 
-Possible parameters to the `sugain`command are listed, and default values are given. In our case, we have `wagc=1`, which means that the window is 1 seconds long. Try experimenting the window length with other:
+Possible parameters to the `sugain`command are listed, and default values are given. In our case, we have `wagc=1`, which means that the window is 1 seconds long (Note that we still need agc=1 flag to use AGC gain option). Try experimenting the window length with other:
 ```bash
-sugain agc=1 wagc=1 < ${indata%.su}_ep${ep}.su | suximage perc=80 &
+sugain agc=1 wagc=1 < $DATA 
 ```
+
+(NOTE for me: i'll continue this later, add graphical value of data frequency--Benz's book?, add spherical divergence coorection but tpow would do in some t params adjustment, also add the stack images)
+
 
 ## Data Independent Gain
 ### $t$ squared

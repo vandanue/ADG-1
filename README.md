@@ -1,4 +1,4 @@
- <img src="./img/img_1.png" width="20%" />
+ <img src="./img/img_1.png"/>
 
 # Geophysical Data Analysis 1
 

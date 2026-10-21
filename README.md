@@ -1,150 +1,114 @@
-<img src="./img/img_1.png" style="zoom:20%;" />
+ <img src="./img/img_1.png" width="20%" />
 
 # Geophysical Data Analysis 1
-Course notes for the Geophysical Data Analysis 1 course (2025/2026 - 1) taught by Dr. Ayunda Aulia Valencia, S.T., M.T. and Agus Riyanto, M.Si. at the Department of Geoscience for [BSc. in Geophysics](https://geosciences.ui.ac.id/program-studi-s1-geofisika/). This course is divided into two classes, each taught by a different lecturer. While the overall learning objectives are aligned, there may be slight differences in the syllabus and course materials between the two.
+
+Course notes for Geophysical Data Analysis 1 (2025/2026 - 1), taught by Dr. Ayunda Aulia Valencia, S.T., M.T. and Agus Riyanto, M.Si., at the Department of Geosciences, Faculty of Mathematics and Natural Sciences, Universitas Indonesia, for the [Bachelor's Program in Geophysics](https://geosciences.ui.ac.id/program-studi-s1-geofisika/).
+
+The course covers seismic data processing and analysis using Seismic Unix (SU), GNU Octave, and other computational tools. The repository contains lecture notes, practical exercises, scripts, and supporting figures organized by lecture week.
+
+## Seismic Processing Workflow
+
+The following diagram illustrates a conventional seismic reflection processing workflow, from raw seismic data to migrated output. The actual processing sequence may vary depending on the dataset and processing objectives.
 
 ```mermaid
 flowchart TD
-    A[/Raw Seismic Data/] --> B[Convert SEGY to SU]
-    B --> C[/Raw Data SU Format/]
+    A[/Raw Seismic Data/] --> B[Convert SEG-Y to SU]
+    B --> C[/Raw Data in SU Format/]
     C --> D[Apply Geometry]
-    D --> E[/Geometry Applied Raw Data/]
+    D --> E[/Geometry-Applied Raw Data/]
     E --> F[Amplitude Recovery]
-    F --> G[/Amplitude Corrected Data/]
+    F --> G[/Amplitude-Corrected Data/]
     G --> H[F-K Filter]
     H --> I[/F-K Filtered Data/]
     I --> J[Band-Pass Filter]
     J --> K[/Band-Pass Filtered Data/]
     K --> L[Deconvolution]
     L --> M[/Deconvolved Data/]
+
     subgraph First Pass
-    direction LR
-        M --> |Sort to CDP| Z1[Velocity Analysis]
+        direction LR
+        M -->|Sort to CDP| Z1[Velocity Analysis]
         Z1 --> Z2[NMO]
-        Z2 --> |Satisfied ?| Z3[/NMO Corrected Data/]
+        Z2 --> Z3[/NMO-Corrected Data/]
     end
 
     M --> N[Elevation Statics Correction]
-    N --> O[/Elevation Statics Corrected Data/] 
+    N --> O[/Elevation-Statics-Corrected Data/]
+
     subgraph Second Pass
-    direction LR
-        O --> |Sort to CDP| Z4[Velocity Analysis]
+        direction LR
+        O -->|Sort to CDP| Z4[Velocity Analysis]
         Z4 --> Z5[NMO]
-        Z5 --> |Satisfied ?| Z6[/NMO Corrected Data/]
+        Z5 --> Z6[/NMO-Corrected Data/]
     end
 
     O --> P[Residual Statics Correction]
-    P --> Q[/Residual Statics <br/> Corrected Data/]
+    P --> Q[/Residual-Statics-Corrected Data/]
+
     subgraph Third Pass
-    direction LR
-        Q --> |Sort to CDP| Z7[Velocity Analysis]
+        direction LR
+        Q -->|Sort to CDP| Z7[Velocity Analysis]
         Z7 --> Z8[NMO]
-        Z8 --> |Satisfied ?| Z9[/NMO Corrected Data/]
+        Z8 --> Z9[/NMO-Corrected Data/]
     end
 
-    Z9 --> |Selected Velocity| T[Stacking]
+    Z9 -->|Selected Velocity| T[Stacking]
     T --> U[/Stacked Data/]
     U --> V[Time Migration]
-    V --> W[/Time Migrated Data/]
-    W --> X[Convert SU to SEGY]
-    X --> Y[/SEGY Output/]
+    V --> W[/Time-Migrated Data/]
+    W --> X[Convert SU to SEG-Y]
+    X --> Y[/SEG-Y Output/]
 ```
 
-## Prerequisites & Dependencies
+## Material
 
-- **Seismic Un*x:** Required for running the Seismic Un*x-related scripts and exercises.  Installation instructions can be found at the [Seismic Un*x website](https://www.cwp.mines.edu/cwpcodes/).
-- **Python 3.x:** Necessary for running the Python scripts.
-    - Libraries:  Ensure you have the following libraries installed (using pip):
-        - `numpy`
-        - `matplotlib`
-- **MATLAB/Octave:**  For running the MATLAB/Octave scripts. Octave is recommended as a free alternative.
-- **A Linux/Unix-like environment:** While some tools might work on Windows, the scripts are designed for a Unix-like environment (e.g., Linux, macOS, or WSL on Windows).
+The repository is organized by lecture week. Each numbered directory contains the notes and related materials available for that topic.
 
-## Installation & Setup Instructions
+| Directory | Topic |
+|---|---|
+| `01_linux-and-setup/` | Introduction to Linux, WSL installation, and Seismic Unix setup |
+| `02_geometry/` | Seismic geometry assignment and application using Octave and Python |
+| `03_gain/` | Seismic amplitude recovery and gain testing |
+| `04_noise-attenuation/` | Seismic noise attenuation |
+| `05_deconvolution/` | Seismic deconvolution |
+| `06_velocity-analysis-and-stacking/` | Velocity analysis, normal moveout (NMO), and stacking |
+| `07_stolt-migration/` | Stolt migration |
+| `09_octave-introduction/` | Introduction to GNU Octave and MATLAB-compatible computing |
+| `10_seismic-attributes/` | Seismic attributes |
+| `11_neural-network-in-seismic/` | Neural networks in seismic applications |
+| `12_spectral-decomposition/` | Seismic spectral decomposition |
+| `13_seismic-ray-tracing/` | Seismic ray tracing |
+| `14_acoustic-finite-difference/` | Acoustic wave simulation using the finite-difference method |
+| `15_velocity-well-tie-and-depth-conversion/` | Velocity analysis, well-to-seismic tie, and depth conversion |
 
-1.  **Clone the repository:**
+Weeks 8 and 16 are reserved for the midterm and final examinations, respectively.
 
-    ```bash
-    git clone https://github.com/vandanue/ADG-1.git
-    cd ADG-1
-    ```
+Additional scripts and figures are maintained in the repository's `Script/` and `img/` directories. Some materials may be incomplete or subject to revision as the course notes are updated.
 
-2.  **Seismic Un*x:**
+## Tools and Technologies
 
-    -  Make sure Seismic Un*x is installed and properly configured in your environment.
-    -  Verify that the `$CWPROOT` environment variable is set correctly.
+- **Seismic Unix (SU):** Seismic data processing and shell-based workflows.
+- **GNU Octave:** Numerical computing, signal processing, and seismic analysis. MATLAB-compatible scripts may also be used where applicable.
+- **Python:** Supporting scripts and computational exercises.
+- **Linux/Unix:** Command-line tools and scripting for seismic processing.
 
-3.  **Python Environment (Optional):**
+Refer to the individual lecture notes for topic-specific instructions, scripts, and requirements.
 
-    -  Create a virtual environment (recommended):
+## Contributing
 
-        ```bash
-        python -m venv venv
-        source venv/bin/activate  # On Linux/macOS
-        venv\Scripts\activate  # On Windows
-        ```
+Corrections, improvements, and additional examples are welcome.
 
-    -  Install the required Python packages:
+1. Fork the repository.
+2. Create a branch for your changes.
+3. Commit your changes with descriptive commit messages.
+4. Push your branch and submit a pull request.
 
-        ```bash
-        pip install numpy matplotlib
-        ```
+## License
 
-4.  **MATLAB/Octave:**
-
-    - Ensure MATLAB or Octave is installed on your system.
-    - Octave is free and can be easily installed with your distribution's package manager (e.g., `apt-get install octave`).
-
-## Usage Examples
-
-### Applying Geometry using Octave
-
-1. Navigate to the `Scripts/1_geometry/matlab-octave/` directory.
-2.  Open `geom_octave.m` in Octave.
-3.  Run the script:
-
-    ```octave
-    octave:1> geom_octave
-    ```
-    This script requires the `extract_geom_ps` and `geom_header_reg_offset.bin` files to be present in the same directory.
-
-### Applying Geometry using Python
-
-1.  Navigate to the `Scripts/1_geometry/python/` directory.
-2.  Open `geometry.py`.
-3.  Run the script:
-
-    ```bash
-    python geometry.py
-    ```
-
-### Running Seismic Un*x Commands (Examples are within the note files)
-
-Refer to the specific markdown files in the `Notes/` directory for examples on how to use Seismic Un*x commands within shell scripts for tasks like gain testing and noise attenuation. Example usage is explained in each markdown file.
-
-## Configuration Options
-
--   Most scripts can be configured by modifying variables directly within the script files (e.g., changing file paths, adjusting gain parameters, etc.).
--   Seismic Un*x configuration is typically done through environment variables and parameters passed to SU commands.  Refer to the SU documentation for more details.
-
-## Contributing Guidelines
-
-1.  Fork the repository.
-2.  Create a new branch for your feature or bug fix:
-
-    ```bash
-    git checkout -b feature/your-feature-name
-    ```
-
-3.  Make your changes and commit them with descriptive messages.
-4.  Push your branch to your forked repository.
-5.  Create a pull request to the main repository.
-
-## License Information
-
-This project has no license currently specified.  All rights are reserved by the owner.
+No license has currently been specified for this repository. Unless otherwise stated, all rights are reserved by the repository owner.
 
 ## Acknowledgments
 
--   The content of this repository is based on course materials from Geophysical Data Analysis 1 (SCGF603501).
--   Seismic Un*x is a product of the Center for Wave Phenomena (CWP) at the Colorado School of Mines.
+- Dr. Ayunda Aulia Valencia, S.T., M.T., and Agus Riyanto, M.Si., for teaching Geophysical Data Analysis 1 (SCGF603501).
+- The Center for Wave Phenomena (CWP) at the Colorado School of Mines for developing Seismic Unix.
+

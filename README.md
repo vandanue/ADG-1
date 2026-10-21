@@ -70,7 +70,7 @@ The repository is organized by lecture week. Each numbered directory contains th
 | `02_geometry/` | Seismic geometry assignment and application using Octave and Python |
 | `03_gain/` | Seismic amplitude recovery and gain testing |
 | `04_noise-attenuation/` | Seismic noise attenuation |
-| `05_deconvolution/` | Seismic deconvolution |
+| `05_deconvolution-and-statics-correction/` | Seismic deconvolution and statics correction, both elevation and residual statics |
 | `06_velocity-analysis-and-stacking/` | Velocity analysis, normal moveout (NMO), and stacking |
 | `07_stolt-migration/` | Stolt migration |
 | `09_octave-introduction/` | Introduction to GNU Octave and MATLAB-compatible computing |

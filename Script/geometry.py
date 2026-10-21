@@ -3,6 +3,7 @@ import math
 import csv 
 import numpy as np
 from matplotlib import pyplot as plt
+import collections
 
 os.chdir(r'D:\ADG\Data\1_geometry\python')
 fname1 = 'Line_001.SPS'
@@ -129,7 +130,6 @@ left = np.arange(-3525, -25 + 1, 25)
 offset_each_shot = np.concatenate((left, right))
 offset_each_shot = np.tile(offset_each_shot, 251).reshape(-1, 1).flatten().tolist()
 
-import collections
 # count each CDP
 cdp_counts = collections.Counter(cdp_each_shot)
 # sort CDP number

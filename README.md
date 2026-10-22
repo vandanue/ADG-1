@@ -18,7 +18,7 @@ flowchart TD
     D --> E[Elevation Statics Correction]
     E --> F[1st Pass Velocity Analysis]
 
-    %% Velocity analysis branch
+    %% Velocity analysis and statics
     F --> F1[1st Pass Residual Statics]
     F1 --> F2[2nd Pass Velocity Analysis]
     F2 --> F3[2nd Pass Residual Statics]
@@ -27,27 +27,43 @@ flowchart TD
     G --> H[Residual Statics]
     F3 --> H
     H --> I[Amplitude Recovery]
-    F2 e1@-.-> I
-    e1@{ animate: true }
-    I --> J[CPD Denoise]
-    
-    %% Relative amplitude
-    J --> R1[AGC]
-    R1 --> R1a[3rd Pass Velocity Analysis]
-    R1a --> R2[NMO Re-apply: VEL-3]
-    R1 --> R2
-    R2 --> R3[Stack]
-    R3 --> R4[Time Migration]
-    R4 --> R5[SEGY Out VOL1]
+    F2 -.-> I
+    I --> J[CDP Denoise]
 
+    %% Relative amplitude branch
+    subgraph REL["Relative Amplitude"]
+        direction TD
+        R1[AGC]
+        R1a[3rd Pass Velocity Analysis]
+        R2[NMO Re-apply: VEL-3]
+        R3[Stack]
+        R4[Time Migration]
+        R5[SEG-Y Out VOL1]
 
-    %% True amplitude
-    R1a --> T1
-    J --> T1[NMO Re-apply: VEL-3]
-    T1 --> T2[Stack]
-    T2 --> T4[Time Migration]
-    T4 --> T5[SEGY Out VOL2]
+        R1 --> R1a
+        R1 --> R2
+        R1a --> R2
+        R2 --> R3 --> R4 --> R5
+    end
 
+    %% True amplitude branch
+    subgraph TRUE["True Amplitude"]
+        direction TD
+        T1[NMO Re-apply: VEL-3]
+        T2[Stack]
+        T4[Time Migration]
+        T5[SEG-Y Out VOL2]
+
+        T1 --> T2 --> T4 --> T5
+    end
+
+    J --> R1
+    J --> T1
+    R1a -.-> T1
+
+    %% Branch label styling
+    style REL fill:#E8F1FC,stroke:#3973AC,stroke-width:2px,color:#17365D
+    style TRUE fill:#E8F5E9,stroke:#438653,stroke-width:2px,color:#20552A
 ```
 
 ## Material

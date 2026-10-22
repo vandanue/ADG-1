@@ -1,4 +1,4 @@
-# Introduction to GNU Octave for Geophysics: Petrophysical Applications
+# Introduction to GNU Octave for Geophysics
 
 MATLAB is a widely used numerical computing environment for mathematical operations, data analysis, and visualization. Its name comes from *Matrix Laboratory*, reflecting the importance of matrices and arrays in its computational framework.
 

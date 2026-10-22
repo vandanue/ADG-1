@@ -282,3 +282,150 @@ The factor of two accounts for the two-way travel time. This example assumes tha
 The examples above demonstrate how the basic features of GNU Octave extend to different geophysical problems. Vector and matrix operations support data organization and numerical modeling, mathematical functions enable signal processing and parameter calculations, and plotting functions help communicate the results.
 
 The objective at this stage is not to implement every method in full, but to become comfortable with the computational workflow. These fundamentals will make it easier to understand and implement the more specialized methods introduced in subsequent course materials.
+
+## Repetition with `for` Loops
+
+Loops allow a set of commands to be executed repeatedly without writing the same statements multiple times. A `for` loop is useful when the number of iterations is known in advance, such as processing several traces, iterating over multiple CMP gathers, or performing calculations across a range of values.
+
+The general structure is:
+
+```matlab
+for i = start_value:end_value
+    % Commands to repeat
+end
+```
+
+For example, the following loop displays a message five times:
+
+```matlab
+for i = 1:5
+    fprintf('This is iteration no. %d\n', i);
+    pause(0.5);  % Optional: pause for 0.5 seconds
+end
+```
+
+The variable `i` acts as the loop counter. The `fprintf()` function displays the current iteration number, while `pause(0.5)` introduces a short delay between iterations. The pause can be removed when it is not needed.
+
+### Nested `for` Loops
+
+A loop can also be placed inside another loop. This is called a *nested loop*. It is useful when calculations involve two dimensions, such as iterating over multiple traces and time samples.
+
+```matlab
+for i = 1:10
+    for j = 1:5
+        fprintf('i = %d, j = %d\n', i, j);
+    end
+end
+```
+
+In this example, the inner loop runs five times for each iteration of the outer loop. The complete program therefore executes the inner statement 50 times.
+
+In geophysical applications, nested loops can be used to iterate over samples and traces, grid points, or combinations of model parameters. However, for large datasets, vectorized operations may be more efficient than explicitly looping over every element.
+
+## Repetition with `while` Loops
+
+A `while` loop repeats a set of commands as long as a specified logical condition is true. Unlike a `for` loop, which is often used when the number of iterations is predetermined, a `while` loop is useful when the stopping condition depends on a variable or calculation.
+
+For example:
+
+```matlab
+x = 1;
+
+while x < 100
+    x = x + 1;
+    fprintf('x = %d\n', x);
+end
+```
+
+The loop increases `x` by one during each iteration and stops when `x` reaches 100. The condition is checked before every iteration, so the commands are no longer executed once `x < 100` becomes false.
+
+A `while` loop requires particular care: the commands inside the loop must eventually change the condition or otherwise provide a way to stop. If the condition never becomes false, the program may run indefinitely.
+
+This type of loop is useful for iterative calculations, such as refining an estimated parameter until the change between successive iterations becomes sufficiently small.
+
+## Geophysical Toolboxes and Libraries
+
+GNU Octave provides the basic numerical computing environment, but specialized toolboxes can extend its capabilities for seismic processing, well-log analysis, and geophysical data handling. The following tools are examples worth exploring.
+
+| Toolbox or resource | Purpose |
+|---|---|
+| [CREWES MATLAB Toolbox](https://www.crewes.org/ResearchLinks/FreeSoftware/) | A collection of seismic processing, modeling, and visualization routines. This toolbox will be used as a practical resource in the course. |
+| SeismicLab | An additional toolbox to explore for seismic processing and analysis. Check the specific project's documentation and supported software versions before installation. |
+| [SegyMAT](https://segymat.sourceforge.net/) | A collection of MATLAB-compatible functions for reading and writing SEG-Y files. It explicitly supports both MATLAB and GNU Octave. |
+| SeisLab | A collection of MATLAB functions for seismic and well-log analysis. Compatibility with the current Octave release should be checked before use. |
+| [Awesome Open Geoscience](https://github.com/softwareunderground/awesome-open-geoscience) | A broader, community-curated list of open-source geoscience software, datasets, tutorials, and other resources. It covers more than MATLAB- or Octave-based tools. |
+
+Not every MATLAB toolbox works identically in GNU Octave. Before using a toolbox, check its documentation, dependencies, licensing, and compatibility with your installed software version.
+
+## Installing the CREWES Toolbox in GNU Octave
+
+The CREWES educational toolbox is available from the [CREWES Free Software page](https://www.crewes.org/ResearchLinks/FreeSoftware/). The download page provides the archive `crewes_educational.zip`, along with documentation and related seismic-processing learning materials.
+
+The official installation instructions are written for MATLAB. The following steps show how to add the extracted toolbox to GNU Octave's search path. Adding the directories makes the functions discoverable, but does not guarantee that every MATLAB-specific function will work in Octave.
+
+### Step 1: Download and Extract the Toolbox
+
+1. Open the CREWES Free Software webpage.
+2. Download the archive named `crewes_educational.zip`.
+3. Extract the ZIP file into a permanent folder. For example, on Windows, you could use:
+
+   `C:/Annora/data/crewes_educational`
+
+   Replace this example with the actual location on your computer. Avoid moving the folder after configuring the search path.
+
+### Step 2: Add the Folder and Its Subdirectories to the Path
+
+Octave needs to know where to look for external functions. Because CREWES contains functions organized into multiple subdirectories, adding only the top-level folder may not be sufficient.
+
+#### Option A: Using the Octave GUI
+
+1. Open GNU Octave and locate the File Browser panel.
+2. Navigate to the directory containing the extracted `crewes_educational` folder.
+3. Select the `crewes_educational` folder.
+4. Right-click the folder and look for `Add to Path`, then select `Selected Directories and Subdirectories`. The exact menu wording may vary between Octave versions.
+5. Return to the Command Window and run:
+
+   ```matlab
+   savepath
+   ```
+
+This saves the configured search path so that Octave can restore it in subsequent sessions. The command normally returns `0` if saving succeeds.
+
+#### Option B: Using Commands
+
+The same operation can be performed directly in the Command Window:
+
+```matlab
+% Set this to the folder where CREWES was extracted
+root = 'C:/Annora/data/crewes_educational';
+
+% Add the folder and its subdirectories to the search path
+addpath(genpath(root));
+
+% Save the path for future Octave sessions
+savepath;
+```
+
+The function `genpath()` generates a path containing the specified directory and its subdirectories, while `addpath()` adds those directories to Octave's search path.
+
+Use forward slashes in Windows paths as shown above, and make sure that `root` matches the actual folder on your computer.
+
+### Step 3: Verify the Installation
+
+Before running a toolbox function, check whether Octave can locate it:
+
+```matlab
+which plotseis
+```
+
+If the function is found, Octave should display its file location. Next, run:
+
+```matlab
+plotseis
+```
+
+In the CREWES toolbox, `plotseis` is a function for displaying seismic sections and may show a demonstration when called without input arguments. If the installation is working and the required functionality is compatible with your Octave version, a plot window should appear.
+
+If `which plotseis` returns no function location, revisit Step 2 and confirm that the correct folder and its subdirectories have been added. If the function is found but produces an error when executed, the issue may instead involve toolbox compatibility, dependencies, or graphics functionality.
+
+For actual seismic data, `plotseis` can also be called with a seismic matrix and, when needed, its time and spatial axes. This makes it useful for visualizing seismic sections during processing and interpretation.

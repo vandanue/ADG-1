@@ -12,52 +12,42 @@ The following diagram illustrates a conventional seismic reflection processing w
 
 ```mermaid
 flowchart TD
-    A[/Raw Seismic Data/] --> B[Convert SEG-Y to SU]
-    B --> C[/Raw Data in SU Format/]
-    C --> D[Apply Geometry]
-    D --> E[/Geometry-Applied Raw Data/]
-    E --> F[Amplitude Recovery]
-    F --> G[/Amplitude-Corrected Data/]
-    G --> H[F-K Filter]
-    H --> I[/F-K Filtered Data/]
-    I --> J[Band-Pass Filter]
-    J --> K[/Band-Pass Filtered Data/]
-    K --> L[Deconvolution]
-    L --> M[/Deconvolved Data/]
+    A[Reformat] --> B[Geometry and Trace Edits]
+    B --> C[F-K Filter]
+    C --> D[Bandpass Filter]
+    D --> E[Elevation Statics Correction]
+    E --> F[1st Pass Velocity Analysis]
 
-    subgraph First Pass
-        direction LR
-        M -->|Sort to CDP| Z1[Velocity Analysis]
-        Z1 --> Z2[NMO]
-        Z2 --> Z3[/NMO-Corrected Data/]
-    end
+    %% Velocity analysis branch
+    F --> F1[1st Pass Residual Statics]
+    F1 --> F2[2nd Pass Velocity Analysis]
+    F2 --> F3[2nd Pass Residual Statics]
 
-    M --> N[Elevation Statics Correction]
-    N --> O[/Elevation-Statics-Corrected Data/]
+    F --> G[Deconvolution]
+    G --> H[Residual Statics]
+    F3 --> H
+    H --> I[Amplitude Recovery]
+    F2 e1@-.-> I
+    e1@{ animate: true }
+    I --> J[CPD Denoise]
+    
+    %% Relative amplitude
+    J --> R1[AGC]
+    R1 --> R1a[3rd Pass Velocity Analysis]
+    R1a --> R2[NMO Re-apply: VEL-3]
+    R1 --> R2
+    R2 --> R3[Stack]
+    R3 --> R4[Time Migration]
+    R4 --> R5[SEGY Out VOL1]
 
-    subgraph Second Pass
-        direction LR
-        O -->|Sort to CDP| Z4[Velocity Analysis]
-        Z4 --> Z5[NMO]
-        Z5 --> Z6[/NMO-Corrected Data/]
-    end
 
-    O --> P[Residual Statics Correction]
-    P --> Q[/Residual-Statics-Corrected Data/]
+    %% True amplitude
+    R1a --> T1
+    J --> T1[NMO Re-apply: VEL-3]
+    T1 --> T2[Stack]
+    T2 --> T4[Time Migration]
+    T4 --> T5[SEGY Out VOL2]
 
-    subgraph Third Pass
-        direction LR
-        Q -->|Sort to CDP| Z7[Velocity Analysis]
-        Z7 --> Z8[NMO]
-        Z8 --> Z9[/NMO-Corrected Data/]
-    end
-
-    Z9 -->|Selected Velocity| T[Stacking]
-    T --> U[/Stacked Data/]
-    U --> V[Time Migration]
-    V --> W[/Time-Migrated Data/]
-    W --> X[Convert SU to SEG-Y]
-    X --> Y[/SEG-Y Output/]
 ```
 
 ## Material

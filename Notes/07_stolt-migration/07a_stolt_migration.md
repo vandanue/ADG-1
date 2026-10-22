@@ -25,4 +25,4 @@ The first display shows the stacked section before migration. After running the 
 
 The migration is shown below
 
-![stolt-mig](../img/img_15.png)
+![stolt-mig](../../img/img_15.png)

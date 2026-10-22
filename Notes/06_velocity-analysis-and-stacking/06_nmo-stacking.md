@@ -76,11 +76,11 @@ To run the `iva.sh` script, execute `./iva.sh` after setting the required parame
 
 In practice, initial velocity analysis is usually performed with a relatively coarse CMP interval, for example every 50 to 100 CMPs, to obtain a preliminary velocity trend. After this first pass, the analysis is repeated with a shorter interval (e.g., every 20 to 25 CMPs) in zones of structural complexity or where velocity variations are expected. This iterative refinement helps produce a smooth and geologically consistent stacking-velocity field.
 
-![iva](../img/img_11.png)
+![iva](../../img/img_11.png)
 
 After picking, the script outputs the NMO-corrected CMP gather and the derived stacking-velocity function. The velocity picks are saved in a file, typically named vpick.data. This file will later be used as input for the NMO correction step using sunmo, where the selected stacking velocities are applied to flatten reflection events prior to stacking.
 
-![iva-pick](../img/img_12.png)
+![iva-pick](../../img/img_12.png)
 
 ## Normal Moveout Correction
 
@@ -98,16 +98,6 @@ After NMO correction, the gathers are stacked to produce a preliminary stacked s
 sustack < Line_001_v1_cdp.su | suximage perc=90 cmap=hsv4 title="Brute stack V1 after velan" label1="Time [s]" label2="CDP" windowtitle="Brute stack" &
 ```
 
-![v1-velan](../img/img_13.png)
+![v1-velan](../../img/img_13.png)
 
 This stack provides an early view of reflector continuity before applying statics correction and further velocity refinement.
-
-## Output Summary
-| Step | Description                                  | Output File                  |
-| ---- | -------------------------------------------- | ---------------------------- |
-| 1    | Dataset after CDP sorted              | `Line_001_geom_agc_wagc0.5_d2_fk_bpf15,20,70,80_decon_cdp.su`      |
-| 2    | Velocity picking data                | `vpick.data`  |
-| 3    | Dataset after NMO correction               | `Line_001_v1_cdp.su`       |
-
-## Script Used
-`iva.sh`

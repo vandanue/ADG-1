@@ -30,40 +30,36 @@ flowchart TD
     F2 -.-> I
     I --> J[CDP Denoise]
 
-    %% Relative amplitude branch
-    subgraph REL["Relative Amplitude"]
-        direction TD
-        R1[AGC]
-        R1a[3rd Pass Velocity Analysis]
-        R2[NMO Re-apply: VEL-3]
-        R3[Stack]
-        R4[Time Migration]
-        R5[SEG-Y Out VOL1]
+    subgraph BRANCHES[" "]
+        direction LR
 
-        R1 --> R1a
-        R1 --> R2
-        R1a --> R2
-        R2 --> R3 --> R4 --> R5
-    end
+        subgraph REL["Relative Amplitude"]
+            direction TD
+            R1[AGC] --> R1a[3rd Pass Velocity Analysis]
+            R1 --> R2[NMO Re-apply: VEL-3]
+            R1a --> R2
+            R2 --> R3[Stack] --> R4[Time Migration] --> R5[SEG-Y Out VOL1]
+        end
 
-    %% True amplitude branch
-    subgraph TRUE["True Amplitude"]
-        direction TD
-        T1[NMO Re-apply: VEL-3]
-        T2[Stack]
-        T4[Time Migration]
-        T5[SEG-Y Out VOL2]
+        subgraph TRUE["True Amplitude"]
+            direction TD
+            T1[NMO Re-apply: VEL-3]
+            T2[Stack]
+            T4[Time Migration]
+            T5[SEG-Y Out VOL2]
 
-        T1 --> T2 --> T4 --> T5
+            T1 --> T2 --> T4 --> T5
+        end
     end
 
     J --> R1
     J --> T1
     R1a -.-> T1
 
-    %% Branch label styling
+    style BRANCHES fill:none,stroke:none
     style REL fill:#E8F1FC,stroke:#3973AC,stroke-width:2px,color:#17365D
     style TRUE fill:#E8F5E9,stroke:#438653,stroke-width:2px,color:#20552A
+
 ```
 
 ## Material

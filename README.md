@@ -71,9 +71,7 @@ The repository is organized by lecture week. Each numbered directory contains th
 | `14_acoustic-finite-difference/` | Acoustic wave simulation using the finite-difference method |
 | `15_velocity-well-tie-and-depth-conversion/` | Velocity analysis, well-to-seismic tie, and depth conversion |
 
-Weeks 8 and 16 are reserved for the midterm and final examinations, respectively.
-
-Additional scripts and figures are maintained in the repository's `Script/` and `img/` directories. Some materials may be incomplete or subject to revision as the course notes are updated.
+Weeks 8 and 16 are reserved for the midterm and final examinations, respectively. Some materials may be incomplete or subject to revision as the course notes are updated.
 
 ## Tools and Technologies
 

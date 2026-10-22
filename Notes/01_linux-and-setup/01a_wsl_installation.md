@@ -2,7 +2,7 @@
 
 1. Before installing WSL, open `Windows Features` then enable `Windows Subsystem for Linux`, `Virtual Machine Platform` and `Windows Hypervision Platform`.
 
-![win_features](../img/win_features.png)
+![win_features](../../img/win_features.png)
 
 2. After enabling in `Windows Features`, open terminal. You can use `PowerShell` or `CMD`.
 3. Once you get into terminal, install WSL. For this subject, we are gonna use Ubuntu 24 for running Seismic Unix. 

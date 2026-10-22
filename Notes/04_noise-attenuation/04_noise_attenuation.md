@@ -80,7 +80,7 @@ rm -f tmp*
 ```
 
 The filter test presented below, the filter slopes were chosen as -0.5,-0.2,0.2,0.5. The ground roll can be efectively removed by using fk filter. The filtered data and fk spectrum shows that flat slopes at low frequency were filtered out.
-![fk_filter](../img/img_6.png)
+![fk_filter](../../img/img_6.png)
 
 ## Band-pass Filter
 A band-pass filter is a frequency-domain filter that works by multiplying the amplitude spectrum of an input trace with a filter operator. In Seismic Unix, the `sufilter` command is used for this process. It performs zero-phase frequency filtering, meaning the signal’s phase is preserved while its unwanted frequencies are removed. The zero-phase, band-limited wavelet used in the band-pass filter acts as the *filter operator*, shaping the signal to highlight the desired frequency range. In a simple term, band-pass filter is like a vibe check for your seismic data. It only keeps the frequencies that “fit the vibe” and removes the rest. 
@@ -159,7 +159,7 @@ rm -f tmp*
 ```
 
 The image below shows the result of the band-pass filter with cut-off frequencies of 15, 20, 70, and 80 Hz. Most of the ground-roll energy is removed after applying the filter. Increasing the low-cut frequency can further reduce noise, but it should be done carefully since it may also remove parts of the useful signal that share similar frequencies.
-![band-pass_filter](../img/img_7.png) 
+![band-pass_filter](../../img/img_7.png) 
 
 ## Deconvolution
 Deconvolution compresses the basic wavelet in the recorded seismogram, attenuates reverberations and short-period multiples, and improves temporal resolution, giving a clearer representation of subsurface reflectivity. Beyond simple wavelet compression, deconvolution also helps suppress multiple energy in the seismic section. This process is commonly implemented using an inverse filter as the deconvolution operator, which ideally recovers the earth's impulse response when applied to a seismogram. The inverse filter is typically estimated using the least-squares method.
@@ -232,10 +232,10 @@ rm -f tmp*
 ```
 
 The autocorrelation below shows that the second zero crossing occurs at 0.04 s, which indicates that the appropriate `minlag` is 0.04 s. The reverberation continues until approximately 0.08 s, which can be used as the `maxlag`.
-![before-decon](../img/img_8.png)
+![before-decon](../../img/img_8.png)
 
 After applying deconvolution, the temporal resolution increases and the reverberations are suppressed. This improvement occurs because predictive deconvolution effectively compresses the seismic wavelet and removes short-period multiples that obscure primary reflections. 
-![after-decon](../img/img_9.png)
+![after-decon](../../img/img_9.png)
 
 After some filtering process, we can QC the stack
 ```bash
@@ -267,17 +267,6 @@ rm -f *stack.su tmp*
 ```
 
 ### Brute Stack Comparison Before and After Deconvolution
-![brute-stack-after-decon](../img/img_10.png)
+![brute-stack-after-decon](../../img/img_10.png)
 
 Notice that the reflector is enhanced and multiples are attenuated between 1.2–1.4 s.
-
-## Output Summary
-| Step | Description                                  | Output File                  |
-| ---- | -------------------------------------------- | ---------------------------- |
-| 1    | Dataset after spatial sampling is applied              | `Line_001_geom_agc_wagc0.5_d2.su`      |
-| 2    | Dataset after F-K filter is applied                | `Line_001_geom_agc_wagc0.5_d2_fk.su`  |
-| 3    | Dataset after band-pass filter is applied               | `Line_001_geom_agc_wagc0.5_d2_fk_bpf15,20,70,80.su`       |
-| 4    | Dataset after deconvolution is applied | `Line_001_geom_agc_wagc0.5_d2_fk_bpf15,20,70,80_decon.su` |
-
-## Script Used
-`fk.sh`, `bpf.sh`, `decon.sh`, `brute_stack.sh`

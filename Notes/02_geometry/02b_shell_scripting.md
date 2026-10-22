@@ -52,7 +52,7 @@ rm tmp*
 
 The output should look like this:
 
-![Oz data filter](../img/oz_merge.png)
+![Oz data filter](../../img/oz_merge.png)
 
 Left: Oz data before filtering. Right: Oz data after filtering.
 

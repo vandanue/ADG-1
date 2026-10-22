@@ -77,7 +77,7 @@ suplane | suxwigb
 ```
 The output should be like this
 
-![test](../img/test.png)
+![test](../../img/test.png)
 
 After installation is completed, you can run the program from any directory. So that you can place the data files anywhere you want.
 

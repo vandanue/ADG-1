@@ -186,7 +186,7 @@ suplane → junk.su → suspecfx → junk1.su → suxwigb
 
 The pipe-based workflow is cleaner and more efficient for temporary data, while the file-based workflow can be useful when we want to save and inspect the intermediate results.
 
-![Suplane and Suspecfx](../img/suplane_merge.png) 
+![Suplane and Suspecfx](../../img/suplane_merge.png) 
 (left) The `suplane` test pattern, (right) the Fourier transform (time to frequency) of the `suplane` via `suspecfx`.
 
 ## Help Features in SU

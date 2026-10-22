@@ -216,13 +216,7 @@ surange < Line_001_geom.su
 This command will display the minimum and maximum values for each header field and allowing you to verify that geometry (e.g., sx, gx, cdp, offset) has been properly inserted and matches your expected geometry setup.
 
 The output of surange should be like this:
-![geom](../img/img_3.png)
+![geom](../../img/img_3.png)
 
 ## TL;DR
 So basically, the workflow starts from running `geometry.py`, which handles all the data scrapping from the SPS files. That script reads the shot (SPS) and receiver (RPS) positions, matches them, calculates offsets, assigns CDP numbers, and finally exports everything into a clean `geometry.txt` file.Before SU can actually read it, you have to convert the ASCII table into binary format using `a2b`, since `sushw` only works with binary input. Once the geometry's in binary form, you apply it to the seismic data using `sushw`. This step writes the shot, receiver, and CDP information directly into the trace headers. After that, you confirm that everything's in place by checking the updated headers with `surange`. It lists out the min–max values for each header, letting you see if the geometry was properly applied.
-
-## Output Summary
-| Step | Description                                  | Output File                  |
-| ---- | -------------------------------------------- | ---------------------------- |
-| 1    | Geometry file in `ascii` and `binary` | `geometry.txt` and `geometry.bin`   |
-| 2    | Updated dataset with geometry information | `Line_001_geom.su` |

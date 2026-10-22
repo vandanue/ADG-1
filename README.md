@@ -23,7 +23,7 @@ flowchart TD
     F1 --> F2[2nd Pass Velocity Analysis]
     F2 --> F3[2nd Pass Residual Statics]
 
-    F --> G[Deconvolution]
+    E --> G[Deconvolution]
     G --> H[Residual Statics]
     F3 --> H
     H --> I[Amplitude Recovery]

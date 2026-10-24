@@ -79,7 +79,7 @@ title(['3D Seismic (IL ', num2str(crop_il_min), '-', num2str(crop_il_max), ', XL
 xlabel('Inline');
 ylabel('Crossline');
 zlabel('Time (s)');
-colormap(jet);
+colormap(odt_seismic(256));
 colorbar;
 view(-37.5, 30);
 disp('Selesai!');

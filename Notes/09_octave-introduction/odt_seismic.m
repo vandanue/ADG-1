@@ -1,13 +1,11 @@
 function cmap = odt_seismic(n)
-% OPENDTECT_SEISMIC OpenDtect seismic colormap reconstructed from supplied RGB table.
-%   cmap = opendtect_seismic() returns the original 256 colors.
-%   cmap = opendtect_seismic(n) resamples the palette to n colors.
+    % OpendTect seismic colormap
 
     if nargin < 1
         n = 256;
     end
 
-    % Original 256-color OpenDtect RGB table (8-bit RGB values).
+    % RGB value
     RGB = [
         170   0   0;
         172   1   0;
@@ -267,7 +265,7 @@ function cmap = odt_seismic(n)
           0   0   0;
     ];
 
-    % Normalize RGB values to the [0, 1] range used by Octave.
+    % Normalize RGB values
     cmap0 = RGB / 255;
 
     if n == 256

@@ -14,8 +14,8 @@ t = size(data, 1);
 num_traces = size(data, 2);
 
 % Byte number of inline and xline
-ilines = th(98, :);
-xlines = th(96, :);
+ilines = th(98,:);
+xlines = th(96,:);
 
 % Inline and xline range
 min_il = 1932; max_il = 2536;

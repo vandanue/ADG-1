@@ -2,29 +2,27 @@ clear all; close all; clc;
 
 addpath('/home/vandanu/programs/crewes/segy');
 
-% Seismic data loading
-[data, samplerate, header] = altreadsegy('../../Data/3Dseismic.sgy','textformat', 'ascii', 'traceheaders', 'yes');
-
-% Inline and crossline info from headers
+% data loading
+[data, samplerate, header] = altreadsegy('/media/vandanu/HDD/00_College/Asdos/ADG-1/Data/3Dseismic.sgy', 'textformat', 'ascii', 'traceheaders', 'yes');
 inline = 119;
-xline  = 81;
+xline = 81;
 t = size(data, 1);
-time = [0.8:samplerate:0.8+(t-1)*samplerate]';
+time = [0.8:samplerate:0.8 + (t-1)*samplerate];
 
-% Matrix transpose
+% transpose data
 data = data';
+data = reshape(data, [xline, inline, t]);
 
-% Re-shape 2D matrix into 3D
-data = reshape(data,[xline,inline,t]);
+% Plot data
+[x, y, z] = meshgrid(1:inline, 1:xline,time);
 
-% Create slices at middle
-[x,y,z]=meshgrid(1:inline,1:xline,time);
-figure;slice(x,y,z,data,100,50,1);
-
-% Display seismic
-set(gca,'zdir','reverse');
+figure;
+slice(x, y, z, data, 100, 50, 1);
+set(gca, 'zdir', 'reverse');
 axis('tight');
 shading('interp');
-title('3D Seismic Test');
-xlabel('Inline'); ylabel('Xline'); zlabel('Time');
-colormap(jet);colorbar;
+colormap(viridis);
+title('3D seismic');
+xlabel('Inline');
+ylabel('Xline');
+zlabel('Time (s)');

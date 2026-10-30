@@ -1,30 +1,38 @@
-close all; clear all; clc;
+clear all; close all; clc;
 
-addpath('/home/vandanu/programs/crewes/segy');
+% Read data
+horizon = load('/media/vandanu/HDD/00_College/Asdos/ADG-1/Data/Caddo.txt');
 
-% Horizon loading
-hor=load('../../Data/Caddo.txt');
+x = horizon(:,1);
+y = horizon(:,2);
+z = horizon(:,5);
 
-% Column 1 is xline, column 2 is inline, column 5 is the Z value
-horx=hor(:,1);
-hory=hor(:,2);
-horz=hor(:,5);
+n_inline = (max(x) - min(x) + 1);
+n_xline = (max(y) - min(y) + 1);
 
-% Set number of inlines and xlines
-nxline=(max(horx)-min(horx))+1;
-niline=(max(hory)-min(hory))+1;
-xline=[min(horx):max(horx)];
-iline=[min(hory):max(hory)];
+inline = [min(x):max(x)];
+xline = [min(y):max(y)];
 
-% Plan view
-horr = reshape(horz,nxline,niline);
-hort = horr';
-figure;imagesc(xline,iline,hort);
-xlabel('Crossline');ylabel('Inline');title('Caddo: Plan View');
-colormap(hsv);colorbar;
+time = reshape(z, n_inline, n_xline);
+time = time';
 
-% 3-D view
-figure;surf(iline,xline,horr);shading interp;set(gca,'zdir','reverse','ydir','reverse');
-xlabel('Inline');ylabel('Crossline');zlabel('Time (msec)');
-title('Caddo: 3-D View');
-colormap(hsv);colorbar;
+% Plot data
+figure;
+imagesc(inline, xline, time);
+xlabel('Inline');
+ylabel('Xline');
+colorbar;
+colormap(jet);
+
+% Plot 3D horizon
+figure;
+surf(inline, xline, time);
+axis('tight');
+shading('interp');
+set(gca, 'zdir', 'reverse', 'ydir', 'reverse');
+xlabel('Inline');
+ylabel('Xline');
+zlabel('Time (ms)');
+title('Caddo Horizon');
+colorbar;
+colormap(jet);

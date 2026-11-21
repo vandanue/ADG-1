@@ -1,27 +1,61 @@
 clear all; close all; clc;
 
-addpath(genpath('/home/vandanu/programs/crewes/seismic'));
+addpath('/home/vandanu/programs/crewes/segy');
 
 % Load data
-seismic = load("../../Data/Stratton/seismic/Trace_well9.txt");
-time = seismic(:,1);
-trace = seismic(:,2);
+seismic = "../../Data/Stratton/seismic/Stratton3D_crop_XL89.sgy";
 
-##% Determine data size
-##[m,n] = size(seismic);
-##
-##% Allocate space
-##iamp = zeros(m,n);
-##iph = zeros(m,n);
-##ifreq = zeros(m,n);
+% Read SEG-Y
+[data, samplerate, header] = altreadsegy(seismic, 'textformat', 'ascii', 'traceheaders', 'yes');
 
-% Run attributes: reflection strength, ins. phase, ins. freq.
-iamp = ins_amp(trace);
-iph = ins_phase(trace);
-ifreq = ins_freq(trace, time);
+% Determine data size
+[ns, ncdp] = size(data);
 
-##% Display original seismic and its attributes
-##figure;imagesc(cdp,ts,data2);colorbar;xlabel('CDP');ylabel('Time (s)');title('Seismic input');colormap(seisclrs);
-##figure;imagesc(cdp,ts,iamp);colorbar;xlabel('CDP');ylabel('Time (s)');title('Amplitude envelope');colormap(jet);
-##figure;imagesc(cdp,ts,iph);colorbar;xlabel('CDP');ylabel('Time (s)');title('Instantaneous phase');colormap(jet);
-##figure;imagesc(cdp,ts,ifreq,[0 70]);colorbar;xlabel('CDP');ylabel('Time (s)');title('Instantaneous freq');colormap(jet);
+% Time and CDP axes
+time = (0:ns-1) * samplerate;
+cdp = 1:ncdp;
+
+% Calculate attributes
+iamp = ins_amp(data);
+iph = ins_phase(data);
+ifreq = ins_freq(data, samplerate);
+
+% Display original seismic
+figure;
+imagesc(cdp, time, data);
+set(gca, 'YDir', 'reverse');
+colorbar;
+xlabel('CDP');
+ylabel('Time (s)');
+title('Seismic Input - XL 89');
+colormap(gray);
+
+% Amplitude envelope
+figure;
+imagesc(cdp, time, iamp);
+set(gca, 'YDir', 'reverse');
+colorbar;
+xlabel('CDP');
+ylabel('Time (s)');
+title('Amplitude Envelope - XL 89');
+colormap(jet);
+
+% Instantaneous phase
+figure;
+imagesc(cdp, time, iph);
+set(gca, 'YDir', 'reverse');
+colorbar;
+xlabel('CDP');
+ylabel('Time (s)');
+title('Instantaneous Phase - XL 89');
+colormap(jet);
+
+% Instantaneous frequency
+figure;
+imagesc(cdp, time, ifreq, [0 70]);
+set(gca, 'YDir', 'reverse');
+colorbar;
+xlabel('CDP');
+ylabel('Time (s)');
+title('Instantaneous Frequency - XL 89');
+colormap(jet);

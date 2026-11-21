@@ -1,0 +1,21 @@
+Well Name               : 9
+UWI                     :  
+Kelly Bushing Elevation : 119 ft
+Surface Elevation       : 0 ft
+X : 2188905.000000 ft  Y : 709840.000000 ft
+IL: 79                 XL: 89
+First Sample at         : 1217.511108 ms
+Last Sample at          : 1767.036377 ms
+Null Value              : -999.250000
+Number of Samples       : 3247
+
+Column 1 : Time ms
+Column 2 : AI (P-Impedance) - Units : (ft/s)*(g/cc)
+Column 3 : GR (Gamma Ray) - Units : API
+Column 4 : GRD (Gamma Ray) - Units : API
+Column 5 : ILM (Induction Medium) - Units : ohm-ft
+Column 6 : NPSS (Neutron Porosity) - Units : fraction
+Column 7 : RHOB (Density) - Units : g/cc
+Column 8 : RT (Resistivity) - Units : ohm-ft
+Column 9 : SP (SP) - Units : mV
+Column 10: DT (P-sonic) - Units : us/ft
